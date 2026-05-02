@@ -1,0 +1,7 @@
+# NXBusPlayer 公交报站模拟器
+generate_audio.py
+/tmp/
+*.log
+.DS_Store
+__pycache__/
+.venv/
