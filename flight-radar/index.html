@@ -9,97 +9,143 @@
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body { height:100%; overflow:hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
 body { background:#0a1628; }
-
 #map { height:100%; width:100%; z-index:1; }
 
 /* 顶栏 */
 #topbar {
-  position:fixed; top:0; left:0; right:0; z-index:1000;
-  background:linear-gradient(180deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0) 100%);
-  padding:12px 16px 24px;
-  display:flex; justify-content:space-between; align-items:center;
-  pointer-events:none;
+  position:fixed; top:0; left:0; right:0; z-index:2000;
+  background:linear-gradient(180deg, rgba(10,22,40,0.97) 0%, rgba(10,22,40,0) 100%);
+  padding:10px 12px 20px; pointer-events:none;
 }
-#topbar > * { pointer-events:auto; }
-#title { color:#fff; font-size:18px; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
-#title span { font-weight:400; font-size:13px; opacity:0.7; }
-#flight-count {
-  background:rgba(255,255,255,0.1); backdrop-filter:blur(12px);
-  color:#4fc3f7; padding:6px 14px; border-radius:20px;
-  font-size:13px; font-weight:600;
-  border:1px solid rgba(79,195,247,0.3);
-}
-#status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
-#status-dot.live { background:#4caf50; animation:pulse 2s infinite; }
-#status-dot.stale { background:#ff9800; }
+#topbar-inner { display:flex; flex-direction:column; gap:8px; pointer-events:auto; max-width:600px; }
+#title-row { display:flex; justify-content:space-between; align-items:center; }
+#title { color:#fff; font-size:17px; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+#count { color:#4fc3f7; font-size:13px; font-weight:600; }
+#status { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; vertical-align:middle; }
+#status.live { background:#4caf50; animation:pulse 2s infinite; }
+#status.stale { background:#ff9800; }
+#status.err { background:#f44336; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* 搜索栏 */
+#search-row { display:flex; gap:6px; }
+#search-input {
+  flex:1; background:rgba(255,255,255,0.1); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.15); border-radius:20px;
+  color:#fff; padding:8px 16px; font-size:14px; outline:none;
+  transition:border-color 0.2s;
+}
+#search-input:focus { border-color:rgba(79,195,247,0.5); }
+#search-input::placeholder { color:rgba(255,255,255,0.3); }
+#locate-btn {
+  background:rgba(79,195,247,0.2); backdrop-filter:blur(12px);
+  border:1px solid rgba(79,195,247,0.3); border-radius:20px;
+  color:#4fc3f7; padding:8px 14px; font-size:14px; cursor:pointer;
+  white-space:nowrap; transition:background 0.2s;
+}
+#locate-btn:hover { background:rgba(79,195,247,0.3); }
+#locate-btn.active { background:rgba(79,195,247,0.5); }
+
+/* 搜索结果下拉 */
+#search-results {
+  position:absolute; top:100%; left:0; right:0;
+  background:rgba(10,22,40,0.95); backdrop-filter:blur(20px);
+  border:1px solid rgba(79,195,247,0.2); border-radius:12px;
+  max-height:200px; overflow-y:auto; display:none;
+  margin-top:4px;
+}
+#search-results.show { display:block; }
+.search-item {
+  padding:10px 16px; color:rgba(255,255,255,0.8); font-size:13px;
+  cursor:pointer; border-bottom:1px solid rgba(255,255,255,0.05);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.search-item:hover { background:rgba(79,195,247,0.1); }
+.search-item .flight-id { color:#4fc3f7; font-weight:600; }
+.search-item .flight-info { color:rgba(255,255,255,0.4); font-size:11px; }
 
 /* 底部信息栏 */
 #infobar {
-  position:fixed; bottom:0; left:0; right:0; z-index:1000;
-  background:linear-gradient(0deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0) 100%);
-  padding:24px 16px 12px;
-  display:flex; justify-content:center; gap:16px;
-  pointer-events:none;
-  flex-wrap:wrap;
+  position:fixed; bottom:0; left:0; right:0; z-index:2000;
+  background:linear-gradient(0deg, rgba(10,22,40,0.97) 0%, rgba(10,22,40,0) 100%);
+  padding:20px 12px 10px; pointer-events:none;
+  display:flex; justify-content:center; gap:10px; flex-wrap:wrap;
 }
-.info-chip {
+.chip {
   background:rgba(255,255,255,0.08); backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.12);
-  color:rgba(255,255,255,0.8); padding:6px 14px; border-radius:16px;
-  font-size:12px; pointer-events:auto;
+  border:1px solid rgba(255,255,255,0.12); border-radius:14px;
+  color:rgba(255,255,255,0.75); padding:5px 12px; font-size:11px;
+  pointer-events:auto;
 }
-.info-chip strong { color:#4fc3f7; }
+.chip strong { color:#4fc3f7; }
 
-/* 航班弹窗 */
+/* 弹窗 */
 .flight-popup {
-  background:rgba(10,22,40,0.95); backdrop-filter:blur(20px);
-  border:1px solid rgba(79,195,247,0.3); border-radius:16px;
-  color:#fff; padding:16px; min-width:200px;
+  background:rgba(10,22,40,0.96); backdrop-filter:blur(20px);
+  border:1px solid rgba(79,195,247,0.3); border-radius:14px;
+  color:#fff; padding:14px; min-width:200px; font-size:13px;
 }
-.flight-popup h3 { font-size:16px; margin-bottom:8px; color:#4fc3f7; }
-.flight-popup .row { display:flex; justify-content:space-between; padding:4px 0; font-size:13px; }
-.flight-popup .row .label { color:rgba(255,255,255,0.5); }
-.flight-popup .row .value { font-weight:600; }
-.flight-popup .on-ground { color:#ff9800; font-size:12px; margin-top:4px; }
+.flight-popup h3 { font-size:15px; margin-bottom:6px; color:#4fc3f7; }
+.flight-popup .row { display:flex; justify-content:space-between; padding:3px 0; }
+.flight-popup .lbl { color:rgba(255,255,255,0.5); }
+.flight-popup .val { font-weight:600; }
+.flight-popup .ground { color:#ff9800; font-size:11px; margin-top:4px; }
 
-/* 自定义飞机图标 */
-.plane-icon { transition:transform 0.5s ease; }
+/* 定位标记 */
+.user-marker { animation:userPulse 2s infinite; }
+@keyframes userPulse { 0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,0.4)} 50%{box-shadow:0 0 0 12px rgba(76,175,80,0)} }
 
-/* 移动端适配 */
-@media (max-width:600px) {
-  #title { font-size:16px; }
-  #title span { display:block; font-size:11px; }
-  .info-chip { font-size:10px; padding:4px 10px; }
-}
+/* 搜索结果高亮 */
+.highlight-plane { filter:drop-shadow(0 0 8px #ff9800) !important; z-index:9999 !important; }
 
-/* Leaflet 暗色覆盖 */
-.leaflet-control-zoom a { background:rgba(10,22,40,0.8)!important; color:#fff!important; border-color:rgba(255,255,255,0.2)!important; }
-.leaflet-control-attribution { background:rgba(10,22,40,0.6)!important; color:rgba(255,255,255,0.5)!important; font-size:10px!important; }
-.leaflet-control-attribution a { color:rgba(255,255,255,0.5)!important; }
-
-/* 加载提示 */
+/* 加载 */
 #loading {
-  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2000;
-  color:rgba(255,255,255,0.6); font-size:14px;
-  pointer-events:none; transition:opacity 0.5s;
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:3000;
+  color:rgba(255,255,255,0.5); font-size:14px; pointer-events:none;
+  transition:opacity 0.4s;
+}
+#error-msg {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:3000;
+  color:#f44336; font-size:14px; text-align:center; display:none;
+  pointer-events:none;
+}
+
+.leaflet-control-zoom a { background:rgba(10,22,40,0.8)!important; color:#fff!important; border-color:rgba(255,255,255,0.2)!important; }
+.leaflet-control-attribution { background:rgba(10,22,40,0.5)!important; color:rgba(255,255,255,0.4)!important; font-size:9px!important; }
+.leaflet-control-attribution a { color:rgba(255,255,255,0.4)!important; }
+
+@media (max-width:600px) {
+  #title { font-size:15px; }
+  #search-input { font-size:13px; padding:7px 12px; }
+  #locate-btn { font-size:12px; padding:7px 10px; }
+  .chip { font-size:10px; padding:4px 8px; }
 }
 </style>
 </head>
 <body>
 
 <div id="topbar">
-  <div id="title">✈️ 上海航班雷达 <span>Shanghai Flight Radar</span></div>
-  <div id="flight-count"><span id="status-dot" class="live"></span><span id="count-text">加载中…</span></div>
+  <div id="topbar-inner">
+    <div id="title-row">
+      <div id="title">✈️ 上海航班雷达</div>
+      <div id="count"><span id="status" class="live"></span><span id="count-text">加载中…</span></div>
+    </div>
+    <div id="search-row">
+      <input id="search-input" type="text" placeholder="🔍 搜索航班号 / 注册号 / ICAO24…" autocomplete="off">
+      <button id="locate-btn" title="我的位置">📍</button>
+    </div>
+  </div>
 </div>
 
-<div id="loading">🛰️ 正在获取航班数据…</div>
+<div id="loading">🛰️ 获取航班数据…</div>
+<div id="error-msg"></div>
 <div id="map"></div>
 
 <div id="infobar">
-  <div class="info-chip">🛫 浦东 PVG <strong id="pvg-count">-</strong></div>
-  <div class="info-chip">🛬 虹桥 SHA <strong id="sha-count">-</strong></div>
-  <div class="info-chip">📡 更新 <strong id="update-time">-</strong></div>
+  <div class="chip">🛫 浦东 <strong id="pvg-stat">-</strong></div>
+  <div class="chip">🛬 虹桥 <strong id="sha-stat">-</strong></div>
+  <div class="chip">📡 <strong id="src-label">adsb.lol</strong></div>
+  <div class="chip">⏱ <strong id="update-time">-</strong></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -113,192 +159,288 @@ const AIRPORTS = [
   { name:'宁波栎社 NGB', lat:29.8267, lon:121.4619, icao:'ZSNB', type:'minor' },
 ];
 
-// 地图范围 (上海及周边)
-const BOUNDS = { lamin:30.15, lomin:120.15, lamax:31.90, lomax:122.20 };
+const MAP_CENTER = [31.23, 121.47];
+const DEFAULT_ZOOM = 10;
+const SEARCH_RADIUS_NM = 250;
+const REFRESH_MS = 12000;
 
-const REFRESH_INTERVAL = 12000; // 12秒刷新
-
-// ========== 初始化地图 ==========
+// ========== 地图 ==========
 const map = L.map('map', {
-  center: [31.23, 121.47],
-  zoom: 10,
-  zoomControl: true,
-  attributionControl: true,
-  preferCanvas: true,
-}).setView([31.23, 121.47], 10);
+  center: MAP_CENTER, zoom: DEFAULT_ZOOM,
+  zoomControl: true, preferCanvas: true,
+}).setView(MAP_CENTER, DEFAULT_ZOOM);
 
-// 暗色地图底图
 L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; <a href="https://carto.com/">CARTO</a> | <a href="https://opensky-network.org">OpenSky</a>',
+  attribution: '© CARTO | adsb.lol | codetabs.com',
   maxZoom: 19,
 }).addTo(map);
 
 // ========== 机场标记 ==========
 const airportMarkers = {};
 AIRPORTS.forEach(a => {
+  const size = a.type === 'major' ? 26 : 16;
   const icon = L.divIcon({
     className: '',
-    html: `<div style="
-      width:${a.type==='major'?28:18}px; height:${a.type==='major'?28:18}px;
-      background:${a.type==='major'?'rgba(79,195,247,0.25)':'rgba(255,152,0,0.2)'};
-      border:2px solid ${a.type==='major'?'#4fc3f7':'#ff9800'};
-      border-radius:50%;
-      display:flex; align-items:center; justify-content:center;
-      font-size:${a.type==='major'?14:10}px;
-    ">✈</div>`,
-    iconSize: [a.type==='major'?28:18, a.type==='major'?28:18],
-    iconAnchor: [a.type==='major'?14:9, a.type==='major'?14:9],
+    html: `<div style="width:${size}px;height:${size}px;background:${a.type==='major'?'rgba(79,195,247,0.2)':'rgba(255,152,0,0.15)'};border:2px solid ${a.type==='major'?'#4fc3f7':'#ff9800'};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:${a.type==='major'?12:8}px;">✈</div>`,
+    iconSize: [size, size], iconAnchor: [size/2, size/2],
   });
   const m = L.marker([a.lat, a.lon], { icon, zIndexOffset: 1000 }).addTo(map);
-  m.bindTooltip(a.name, { permanent: true, direction: 'top', 
-    className: '', offset:[0,-8],
-    opacity:0.85 });
+  m.bindTooltip(a.name, { permanent: true, direction: 'top', offset:[0,-6], opacity:0.85, className:'' });
   airportMarkers[a.icao] = m;
 });
 
-// ========== 飞机图标工厂 ==========
-const planeIcons = {};
-function getPlaneIcon(heading, altitude) {
-  // 根据高度选颜色
-  let color;
-  if (altitude === null || altitude === undefined) color = '#78909c';
-  else if (altitude < 3000) color = '#ff9800';     // 低空
-  else if (altitude < 8000) color = '#66bb6a';     // 中空
-  else color = '#4fc3f7';                           // 高空
+// ========== 用户定位 ==========
+let userMarker = null;
+let userLatLng = null;
+let trackingUser = false;
+
+document.getElementById('locate-btn').addEventListener('click', () => {
+  if (trackingUser) {
+    trackingUser = false;
+    document.getElementById('locate-btn').classList.remove('active');
+    document.getElementById('locate-btn').textContent = '📍';
+    if (userMarker) { map.removeLayer(userMarker); userMarker = null; }
+    return;
+  }
   
-  // 缓存图标 (每5度一个)
-  const key = `${Math.round(heading/5)*5}_${color}`;
+  trackingUser = true;
+  document.getElementById('locate-btn').classList.add('active');
+  document.getElementById('locate-btn').textContent = '📍 ✓';
+  
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(
+      pos => {
+        userLatLng = [pos.coords.latitude, pos.coords.longitude];
+        if (userMarker) map.removeLayer(userMarker);
+        const uIcon = L.divIcon({
+          className: 'user-marker',
+          html: `<div style="width:20px;height:20px;background:rgba(76,175,80,0.9);border:3px solid #fff;border-radius:50%;box-shadow:0 0 8px rgba(76,175,80,0.6);"></div>`,
+          iconSize: [20,20], iconAnchor: [10,10],
+        });
+        userMarker = L.marker(userLatLng, { icon: uIcon, zIndexOffset: 9999 }).addTo(map);
+        map.setView(userLatLng, map.getZoom());
+      },
+      err => { console.warn('定位失败:', err); trackingUser = false; },
+      { enableHighAccuracy: true, maximumAge: 30000 }
+    );
+  }
+});
+
+// ========== 飞机图标 ==========
+const planeIcons = {};
+function getPlaneIcon(track, altBaro) {
+  let color;
+  if (altBaro == null) color = '#78909c';
+  else if (altBaro < 5000) color = '#ff9800';
+  else if (altBaro < 15000) color = '#66bb6a';
+  else if (altBaro < 30000) color = '#42a5f5';
+  else color = '#4fc3f7';
+  
+  const h = Math.round((track || 0) / 5) * 5;
+  const key = `${h}_${color}`;
   if (planeIcons[key]) return planeIcons[key];
   
-  const size = 28;
-  const h = (heading || 0) * Math.PI / 180;
-  const tipX = size/2 + size/2 * Math.sin(h);
-  const tipY = size/2 - size/2 * Math.cos(h);
-  const leftX = size/2 + size/3 * Math.sin(h + 2.5);
-  const leftY = size/2 - size/3 * Math.cos(h + 2.5);
-  const rightX = size/2 + size/3 * Math.sin(h - 2.5);
-  const rightY = size/2 - size/3 * Math.cos(h - 2.5);
+  const size = 26;
+  const rad = h * Math.PI / 180;
+  const cx = size/2, cy = size/2, r = size/2 - 2;
+  const tipX = cx + r * Math.sin(rad);
+  const tipY = cy - r * Math.cos(rad);
+  const lX = cx + r*0.5 * Math.sin(rad + 2.6);
+  const lY = cy - r*0.5 * Math.cos(rad + 2.6);
+  const rX = cx + r*0.5 * Math.sin(rad - 2.6);
+  const rY = cy - r*0.5 * Math.cos(rad - 2.6);
   
   const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="${tipX},${tipY} ${leftX},${leftY} ${rightX},${rightY} ${size/2},${size/2}"
-      fill="${color}" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-linejoin="round"/>
+    <polygon points="${tipX},${tipY} ${lX},${lY} ${rX},${rY} ${cx},${cy}"
+      fill="${color}" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-linejoin="round"/>
   </svg>`;
   
-  const icon = L.divIcon({
-    className: '',
-    html: svg,
-    iconSize: [size, size],
-    iconAnchor: [size/2, size/2],
-  });
+  const icon = L.divIcon({ className:'', html:svg, iconSize:[size,size], iconAnchor:[size/2,size/2] });
   planeIcons[key] = icon;
   return icon;
 }
 
-// ========== 航班图层 ==========
+// ========== 航班数据 ==========
 let flightLayer = L.layerGroup().addTo(map);
-let currentFlights = new Map();
-let lastUpdate = null;
-let pvgCount = 0, shaCount = 0;
+let allFlights = [];
+let highlightedHex = null;
 
-function isNearAirport(lat, lon, airportLat, airportLon, radiusDeg=0.5) {
-  const dlat = lat - airportLat;
-  const dlon = lon - airportLon;
-  return Math.sqrt(dlat*dlat + dlon*dlon) < radiusDeg;
+function isNear(lat, lon, alat, alon, deg=0.5) {
+  return Math.hypot(lat - alat, lon - alon) < deg;
 }
 
 async function fetchFlights() {
+  if (highlightedHex) {
+    document.getElementById('count-text').textContent = '搜索中…';
+    return;
+  }
+  
   try {
-    const url = `https://opensky-network.org/api/states/all?lamin=${BOUNDS.lamin}&lomin=${BOUNDS.lomin}&lamax=${BOUNDS.lamax}&lomax=${BOUNDS.lomax}`;
-    const resp = await fetch(url);
+    const proxy = 'https://api.codetabs.com/v1/proxy/?quest=';
+    const apiUrl = `https://api.adsb.lol/v2/point/${MAP_CENTER[0]}/${MAP_CENTER[1]}/${SEARCH_RADIUS_NM}`;
+    const resp = await fetch(proxy + encodeURIComponent(apiUrl));
     if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    
     const data = await resp.json();
-    
-    if (!data.states || data.states.length === 0) {
-      updateCounts(0);
-      return;
-    }
-    
-    const now = Date.now();
-    const newFlights = new Map();
-    pvgCount = 0; shaCount = 0;
+    const aircraft = data.ac || [];
+    allFlights = aircraft;
     
     flightLayer.clearLayers();
     
-    data.states.forEach(state => {
-      const [icao24, callsign, origin_country, time_position, last_contact,
-             lon, lat, baro_altitude, on_ground, velocity, true_track,
-             vertical_rate, sensors, geo_altitude, squawk, spi, category] = state;
+    if (aircraft.length === 0) {
+      updateUI(0, 0, 0);
+      document.getElementById('status').className = 'live';
+      return;
+    }
+    
+    let pvg = 0, sha = 0;
+    
+    aircraft.forEach(a => {
+      if (a.lat == null || a.lon == null) return;
       
-      if (lat == null || lon == null) return;
+      const icon = getPlaneIcon(a.track || a.true_heading, a.alt_baro);
+      const z = (a.alt_baro || 0) + 1000;  // 高空在上层
+      const marker = L.marker([a.lat, a.lon], { icon, zIndexOffset: z });
       
-      const altitude = baro_altitude != null ? Math.round(baro_altitude) : null;
-      
-      // 统计机场附近航班
-      if (isNearAirport(lat, lon, 31.1434, 121.8051, 0.8)) pvgCount++;
-      if (isNearAirport(lat, lon, 31.1979, 121.3363, 0.8)) shaCount++;
-      
-      const icon = getPlaneIcon(true_track || 0, altitude);
-      const marker = L.marker([lat, lon], { icon, zIndexOffset: altitude || 0 });
-      
-      // 弹窗信息
-      const altStr = altitude != null ? `${altitude.toLocaleString()} ft` : '未知';
-      const speedStr = velocity != null ? `${Math.round(velocity * 1.944).toLocaleString()} km/h` : '未知';
-      const vsStr = vertical_rate != null ? `${Math.round(vertical_rate * 196.85)} ft/min` : '-';
-      const onGroundStr = on_ground ? ' 🛬 地面' : '';
+      const alt = a.alt_baro != null ? `${a.alt_baro.toLocaleString()} ft` : '?';
+      const gs = a.gs != null ? `${Math.round(a.gs * 1.852)} km/h` : '?';
+      const vs = a.baro_rate != null ? `${Math.round(a.baro_rate)} ft/min` : '-';
+      const track = a.track != null ? `${Math.round(a.track)}°` : '-';
+      const flight = (a.flight || '').trim();
+      const reg = a.r || '?';
+      const type = a.t || '?';
       
       marker.bindPopup(`
         <div class="flight-popup">
-          <h3>${callsign ? callsign.trim() : icao24}</h3>
-          <div class="row"><span class="label">ICAO24</span><span class="value">${icao24}</span></div>
-          <div class="row"><span class="label">高度</span><span class="value">${altStr}</span></div>
-          <div class="row"><span class="label">速度</span><span class="value">${speedStr}</span></div>
-          <div class="row"><span class="label">航向</span><span class="value">${true_track != null ? Math.round(true_track)+'°' : '-'}</span></div>
-          <div class="row"><span class="label">升降率</span><span class="value">${vsStr}</span></div>
-          ${on_ground ? `<div class="on-ground">${onGroundStr}</div>` : ''}
+          <h3>${flight || a.hex}</h3>
+          <div class="row"><span class="lbl">注册号</span><span class="val">${reg}</span></div>
+          <div class="row"><span class="lbl">机型</span><span class="val">${type}</span></div>
+          <div class="row"><span class="lbl">高度</span><span class="val">${alt}</span></div>
+          <div class="row"><span class="lbl">地速</span><span class="val">${gs}</span></div>
+          <div class="row"><span class="lbl">航向</span><span class="val">${track}</span></div>
+          <div class="row"><span class="lbl">升降率</span><span class="val">${vs}</span></div>
+          <div class="row"><span class="lbl">ICAO</span><span class="val">${a.hex}</span></div>
+          ${a.alt_baro != null && a.alt_baro < 100 ? '<div class="ground">🛬 地面</div>' : ''}
         </div>
-      `, { maxWidth:240, className:'' });
+      `, { maxWidth: 240, className: '' });
+      
+      // 高亮搜索结果
+      if (highlightedHex && a.hex === highlightedHex) {
+        const el = marker.getElement();
+        if (el) el.classList.add('highlight-plane');
+      }
       
       marker.addTo(flightLayer);
-      newFlights.set(icao24, { lat, lon, altitude, callsign, on_ground, true_track, velocity });
+      
+      if (isNear(a.lat, a.lon, 31.1434, 121.8051, 0.6)) pvg++;
+      if (isNear(a.lat, a.lon, 31.1979, 121.3363, 0.6)) sha++;
     });
     
-    currentFlights = newFlights;
-    lastUpdate = now;
-    updateCounts(data.states.length);
-    
+    updateUI(aircraft.length, pvg, sha);
+    document.getElementById('status').className = 'live';
     document.getElementById('loading').style.opacity = '0';
-    document.getElementById('status-dot').className = 'live';
-    
-    // 统计
-    document.getElementById('pvg-count').textContent = pvgCount;
-    document.getElementById('sha-count').textContent = shaCount;
+    document.getElementById('error-msg').style.display = 'none';
     
   } catch(e) {
-    console.error('获取航班数据失败:', e);
-    document.getElementById('status-dot').className = 'stale';
-    document.getElementById('loading').textContent = '⚠️ 数据获取失败，稍后重试';
+    console.error('API fail:', e);
+    document.getElementById('status').className = 'err';
+    document.getElementById('error-msg').textContent = '⚠️ 数据获取失败，稍后重试';
+    document.getElementById('error-msg').style.display = 'block';
+    // 降级显示
+    document.getElementById('count-text').textContent = '离线';
   }
 }
 
-function updateCounts(total) {
-  document.getElementById('count-text').textContent = `${total} 架航班`;
+function updateUI(total, pvg, sha) {
+  document.getElementById('count-text').textContent = `${total} 架`;
+  document.getElementById('pvg-stat').textContent = pvg;
+  document.getElementById('sha-stat').textContent = sha;
   const now = new Date();
-  document.getElementById('update-time').textContent = 
+  document.getElementById('update-time').textContent =
     now.toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 }
 
-// ========== 定时刷新 ==========
+// ========== 搜索功能 ==========
+const searchInput = document.getElementById('search-input');
+let searchTimer = null;
+
+searchInput.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  const q = searchInput.value.trim().toUpperCase();
+  
+  if (!q) {
+    highlightedHex = null;
+    fetchFlights();
+    return;
+  }
+  
+  searchTimer = setTimeout(() => doSearch(q), 300);
+});
+
+function doSearch(q) {
+  const matches = allFlights.filter(a => {
+    const flight = (a.flight || '').trim().toUpperCase();
+    const reg = (a.r || '').toUpperCase();
+    const hex = a.hex.toUpperCase();
+    const type = (a.t || '').toUpperCase();
+    return flight.includes(q) || reg.includes(q) || hex.includes(q) || type.includes(q);
+  });
+  
+  if (matches.length === 0) {
+    document.getElementById('count-text').textContent = '无匹配';
+    return;
+  }
+  
+  if (matches.length === 1) {
+    // 直接飞到那个航班
+    const a = matches[0];
+    highlightedHex = a.hex;
+    document.getElementById('count-text').textContent = `${(a.flight||'').trim() || a.hex}`;
+    map.setView([a.lat, a.lon], 12, { animate: true });
+    fetchFlights(); // refresh to re-render highlight
+    return;
+  }
+  
+  // 多个匹配，全刷新并高亮第一个
+  document.getElementById('count-text').textContent = `${matches.length} 匹配`;
+  flightLayer.clearLayers();
+  
+  matches.forEach((a, i) => {
+    if (a.lat == null || a.lon == null) return;
+    const icon = getPlaneIcon(a.track || a.true_heading, a.alt_baro);
+    const z = (a.alt_baro || 0) + (i === 0 ? 5000 : 0);
+    const marker = L.marker([a.lat, a.lon], { icon, zIndexOffset: z });
+    const flight = (a.flight || '').trim();
+    marker.bindTooltip(`${flight || a.hex} · ${a.alt_baro || '?'}ft`, { className:'', offset:[0,-14] });
+    marker.addTo(flightLayer);
+    if (i === 0) {
+      highlightedHex = a.hex;
+      map.setView([a.lat, a.lon], 11, { animate: true });
+    }
+  });
+}
+
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    searchInput.value = '';
+    highlightedHex = null;
+    fetchFlights();
+    searchInput.blur();
+  }
+});
+
+// ========== 自动刷新 ==========
 fetchFlights();
-setInterval(fetchFlights, REFRESH_INTERVAL);
+setInterval(fetchFlights, REFRESH_MS);
 
 // ========== 键盘快捷键 ==========
 document.addEventListener('keydown', e => {
-  if (e.key === 'r' || e.key === 'R') fetchFlights();
-  if (e.key === 'f' || e.key === 'F') map.fitBounds([[BOUNDS.lamin, BOUNDS.lomin], [BOUNDS.lamax, BOUNDS.lomax]]);
+  if (e.key === 'r' && document.activeElement !== searchInput) fetchFlights();
+  if (e.key === 'f' && document.activeElement !== searchInput) map.setView(MAP_CENTER, DEFAULT_ZOOM);
+  if (e.key === '/' && document.activeElement !== searchInput) { e.preventDefault(); searchInput.focus(); }
 });
 
-console.log('🛫 上海航班雷达已就绪 | OpenSky Network API | 刷新间隔 12 秒');
-console.log('⌨️ 快捷键: R=手动刷新 F=适合窗口');
+console.log('🛫 上海航班雷达 | adsb.lol + codetabs proxy | ⌨️ R=刷新 F=复位 /=搜索');
 </script>
 </body>
 </html>
