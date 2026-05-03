@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>上海航班雷达 - Flight Radar Shanghai</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+body { background:#0a1628; }
+
+#map { height:100%; width:100%; z-index:1; }
+
+/* 顶栏 */
+#topbar {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  background:linear-gradient(180deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0) 100%);
+  padding:12px 16px 24px;
+  display:flex; justify-content:space-between; align-items:center;
+  pointer-events:none;
+}
+#topbar > * { pointer-events:auto; }
+#title { color:#fff; font-size:18px; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,0.6); }
+#title span { font-weight:400; font-size:13px; opacity:0.7; }
+#flight-count {
+  background:rgba(255,255,255,0.1); backdrop-filter:blur(12px);
+  color:#4fc3f7; padding:6px 14px; border-radius:20px;
+  font-size:13px; font-weight:600;
+  border:1px solid rgba(79,195,247,0.3);
+}
+#status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+#status-dot.live { background:#4caf50; animation:pulse 2s infinite; }
+#status-dot.stale { background:#ff9800; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* 底部信息栏 */
+#infobar {
+  position:fixed; bottom:0; left:0; right:0; z-index:1000;
+  background:linear-gradient(0deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0) 100%);
+  padding:24px 16px 12px;
+  display:flex; justify-content:center; gap:16px;
+  pointer-events:none;
+  flex-wrap:wrap;
+}
+.info-chip {
+  background:rgba(255,255,255,0.08); backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.8); padding:6px 14px; border-radius:16px;
+  font-size:12px; pointer-events:auto;
+}
+.info-chip strong { color:#4fc3f7; }
+
+/* 航班弹窗 */
+.flight-popup {
+  background:rgba(10,22,40,0.95); backdrop-filter:blur(20px);
+  border:1px solid rgba(79,195,247,0.3); border-radius:16px;
+  color:#fff; padding:16px; min-width:200px;
+}
+.flight-popup h3 { font-size:16px; margin-bottom:8px; color:#4fc3f7; }
+.flight-popup .row { display:flex; justify-content:space-between; padding:4px 0; font-size:13px; }
+.flight-popup .row .label { color:rgba(255,255,255,0.5); }
+.flight-popup .row .value { font-weight:600; }
+.flight-popup .on-ground { color:#ff9800; font-size:12px; margin-top:4px; }
+
+/* 自定义飞机图标 */
+.plane-icon { transition:transform 0.5s ease; }
+
+/* 移动端适配 */
+@media (max-width:600px) {
+  #title { font-size:16px; }
+  #title span { display:block; font-size:11px; }
+  .info-chip { font-size:10px; padding:4px 10px; }
+}
+
+/* Leaflet 暗色覆盖 */
+.leaflet-control-zoom a { background:rgba(10,22,40,0.8)!important; color:#fff!important; border-color:rgba(255,255,255,0.2)!important; }
+.leaflet-control-attribution { background:rgba(10,22,40,0.6)!important; color:rgba(255,255,255,0.5)!important; font-size:10px!important; }
+.leaflet-control-attribution a { color:rgba(255,255,255,0.5)!important; }
+
+/* 加载提示 */
+#loading {
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2000;
+  color:rgba(255,255,255,0.6); font-size:14px;
+  pointer-events:none; transition:opacity 0.5s;
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div id="title">✈️ 上海航班雷达 <span>Shanghai Flight Radar</span></div>
+  <div id="flight-count"><span id="status-dot" class="live"></span><span id="count-text">加载中…</span></div>
+</div>
+
+<div id="loading">🛰️ 正在获取航班数据…</div>
+<div id="map"></div>
+
+<div id="infobar">
+  <div class="info-chip">🛫 浦东 PVG <strong id="pvg-count">-</strong></div>
+  <div class="info-chip">🛬 虹桥 SHA <strong id="sha-count">-</strong></div>
+  <div class="info-chip">📡 更新 <strong id="update-time">-</strong></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// ========== 配置 ==========
+const AIRPORTS = [
+  { name:'上海浦东 PVG', lat:31.1434, lon:121.8051, icao:'ZSPD', type:'major' },
+  { name:'上海虹桥 SHA', lat:31.1979, lon:121.3363, icao:'ZSSS', type:'major' },
+  { name:'杭州萧山 HGH', lat:30.2295, lon:120.4344, icao:'ZSHC', type:'minor' },
+  { name:'南京禄口 NKG', lat:31.7420, lon:118.8620, icao:'ZSNJ', type:'minor' },
+  { name:'宁波栎社 NGB', lat:29.8267, lon:121.4619, icao:'ZSNB', type:'minor' },
+];
+
+// 地图范围 (上海及周边)
+const BOUNDS = { lamin:30.15, lomin:120.15, lamax:31.90, lomax:122.20 };
+
+const REFRESH_INTERVAL = 12000; // 12秒刷新
+
+// ========== 初始化地图 ==========
+const map = L.map('map', {
+  center: [31.23, 121.47],
+  zoom: 10,
+  zoomControl: true,
+  attributionControl: true,
+  preferCanvas: true,
+}).setView([31.23, 121.47], 10);
+
+// 暗色地图底图
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; <a href="https://carto.com/">CARTO</a> | <a href="https://opensky-network.org">OpenSky</a>',
+  maxZoom: 19,
+}).addTo(map);
+
+// ========== 机场标记 ==========
+const airportMarkers = {};
+AIRPORTS.forEach(a => {
+  const icon = L.divIcon({
+    className: '',
+    html: `<div style="
+      width:${a.type==='major'?28:18}px; height:${a.type==='major'?28:18}px;
+      background:${a.type==='major'?'rgba(79,195,247,0.25)':'rgba(255,152,0,0.2)'};
+      border:2px solid ${a.type==='major'?'#4fc3f7':'#ff9800'};
+      border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:${a.type==='major'?14:10}px;
+    ">✈</div>`,
+    iconSize: [a.type==='major'?28:18, a.type==='major'?28:18],
+    iconAnchor: [a.type==='major'?14:9, a.type==='major'?14:9],
+  });
+  const m = L.marker([a.lat, a.lon], { icon, zIndexOffset: 1000 }).addTo(map);
+  m.bindTooltip(a.name, { permanent: true, direction: 'top', 
+    className: '', offset:[0,-8],
+    opacity:0.85 });
+  airportMarkers[a.icao] = m;
+});
+
+// ========== 飞机图标工厂 ==========
+const planeIcons = {};
+function getPlaneIcon(heading, altitude) {
+  // 根据高度选颜色
+  let color;
+  if (altitude === null || altitude === undefined) color = '#78909c';
+  else if (altitude < 3000) color = '#ff9800';     // 低空
+  else if (altitude < 8000) color = '#66bb6a';     // 中空
+  else color = '#4fc3f7';                           // 高空
+  
+  // 缓存图标 (每5度一个)
+  const key = `${Math.round(heading/5)*5}_${color}`;
+  if (planeIcons[key]) return planeIcons[key];
+  
+  const size = 28;
+  const h = (heading || 0) * Math.PI / 180;
+  const tipX = size/2 + size/2 * Math.sin(h);
+  const tipY = size/2 - size/2 * Math.cos(h);
+  const leftX = size/2 + size/3 * Math.sin(h + 2.5);
+  const leftY = size/2 - size/3 * Math.cos(h + 2.5);
+  const rightX = size/2 + size/3 * Math.sin(h - 2.5);
+  const rightY = size/2 - size/3 * Math.cos(h - 2.5);
+  
+  const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="${tipX},${tipY} ${leftX},${leftY} ${rightX},${rightY} ${size/2},${size/2}"
+      fill="${color}" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-linejoin="round"/>
+  </svg>`;
+  
+  const icon = L.divIcon({
+    className: '',
+    html: svg,
+    iconSize: [size, size],
+    iconAnchor: [size/2, size/2],
+  });
+  planeIcons[key] = icon;
+  return icon;
+}
+
+// ========== 航班图层 ==========
+let flightLayer = L.layerGroup().addTo(map);
+let currentFlights = new Map();
+let lastUpdate = null;
+let pvgCount = 0, shaCount = 0;
+
+function isNearAirport(lat, lon, airportLat, airportLon, radiusDeg=0.5) {
+  const dlat = lat - airportLat;
+  const dlon = lon - airportLon;
+  return Math.sqrt(dlat*dlat + dlon*dlon) < radiusDeg;
+}
+
+async function fetchFlights() {
+  try {
+    const url = `https://opensky-network.org/api/states/all?lamin=${BOUNDS.lamin}&lomin=${BOUNDS.lomin}&lamax=${BOUNDS.lamax}&lomax=${BOUNDS.lomax}`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+    
+    if (!data.states || data.states.length === 0) {
+      updateCounts(0);
+      return;
+    }
+    
+    const now = Date.now();
+    const newFlights = new Map();
+    pvgCount = 0; shaCount = 0;
+    
+    flightLayer.clearLayers();
+    
+    data.states.forEach(state => {
+      const [icao24, callsign, origin_country, time_position, last_contact,
+             lon, lat, baro_altitude, on_ground, velocity, true_track,
+             vertical_rate, sensors, geo_altitude, squawk, spi, category] = state;
+      
+      if (lat == null || lon == null) return;
+      
+      const altitude = baro_altitude != null ? Math.round(baro_altitude) : null;
+      
+      // 统计机场附近航班
+      if (isNearAirport(lat, lon, 31.1434, 121.8051, 0.8)) pvgCount++;
+      if (isNearAirport(lat, lon, 31.1979, 121.3363, 0.8)) shaCount++;
+      
+      const icon = getPlaneIcon(true_track || 0, altitude);
+      const marker = L.marker([lat, lon], { icon, zIndexOffset: altitude || 0 });
+      
+      // 弹窗信息
+      const altStr = altitude != null ? `${altitude.toLocaleString()} ft` : '未知';
+      const speedStr = velocity != null ? `${Math.round(velocity * 1.944).toLocaleString()} km/h` : '未知';
+      const vsStr = vertical_rate != null ? `${Math.round(vertical_rate * 196.85)} ft/min` : '-';
+      const onGroundStr = on_ground ? ' 🛬 地面' : '';
+      
+      marker.bindPopup(`
+        <div class="flight-popup">
+          <h3>${callsign ? callsign.trim() : icao24}</h3>
+          <div class="row"><span class="label">ICAO24</span><span class="value">${icao24}</span></div>
+          <div class="row"><span class="label">高度</span><span class="value">${altStr}</span></div>
+          <div class="row"><span class="label">速度</span><span class="value">${speedStr}</span></div>
+          <div class="row"><span class="label">航向</span><span class="value">${true_track != null ? Math.round(true_track)+'°' : '-'}</span></div>
+          <div class="row"><span class="label">升降率</span><span class="value">${vsStr}</span></div>
+          ${on_ground ? `<div class="on-ground">${onGroundStr}</div>` : ''}
+        </div>
+      `, { maxWidth:240, className:'' });
+      
+      marker.addTo(flightLayer);
+      newFlights.set(icao24, { lat, lon, altitude, callsign, on_ground, true_track, velocity });
+    });
+    
+    currentFlights = newFlights;
+    lastUpdate = now;
+    updateCounts(data.states.length);
+    
+    document.getElementById('loading').style.opacity = '0';
+    document.getElementById('status-dot').className = 'live';
+    
+    // 统计
+    document.getElementById('pvg-count').textContent = pvgCount;
+    document.getElementById('sha-count').textContent = shaCount;
+    
+  } catch(e) {
+    console.error('获取航班数据失败:', e);
+    document.getElementById('status-dot').className = 'stale';
+    document.getElementById('loading').textContent = '⚠️ 数据获取失败，稍后重试';
+  }
+}
+
+function updateCounts(total) {
+  document.getElementById('count-text').textContent = `${total} 架航班`;
+  const now = new Date();
+  document.getElementById('update-time').textContent = 
+    now.toLocaleTimeString('zh-CN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+}
+
+// ========== 定时刷新 ==========
+fetchFlights();
+setInterval(fetchFlights, REFRESH_INTERVAL);
+
+// ========== 键盘快捷键 ==========
+document.addEventListener('keydown', e => {
+  if (e.key === 'r' || e.key === 'R') fetchFlights();
+  if (e.key === 'f' || e.key === 'F') map.fitBounds([[BOUNDS.lamin, BOUNDS.lomin], [BOUNDS.lamax, BOUNDS.lomax]]);
+});
+
+console.log('🛫 上海航班雷达已就绪 | OpenSky Network API | 刷新间隔 12 秒');
+console.log('⌨️ 快捷键: R=手动刷新 F=适合窗口');
+</script>
+</body>
+</html>
