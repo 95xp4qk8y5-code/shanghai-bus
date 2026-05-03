@@ -1,482 +1,483 @@
 {
-  "name": "南堡支线",
-  "downOffset": 35,
-  "stations": [
+  "lineName": "南堡支线（凯伦三语）",
+  "up": [
     {
-      "name": "化工路站",
+      "name": "化工路",
+      "type": "起点站",
       "lat": 31.62,
       "lon": 121.45,
-      "num": 1,
-      "audio": true
+      "englishName": "化工路站"
     },
     {
-      "name": "向阳路站",
+      "name": "向阳路",
+      "type": "小站",
       "lat": 31.623,
       "lon": 121.453,
-      "num": 2,
-      "audio": true
+      "englishName": "向阳路站"
     },
     {
-      "name": "堡镇医院站",
+      "name": "堡镇医院",
+      "type": "小站",
       "lat": 31.626,
       "lon": 121.456,
-      "num": 3,
-      "audio": true
+      "englishName": "堡镇医院站"
     },
     {
-      "name": "南堡镇站",
+      "name": "南堡镇",
+      "type": "小站",
       "lat": 31.629,
       "lon": 121.459,
-      "num": 4,
-      "audio": true
+      "englishName": "南堡镇站"
     },
     {
-      "name": "石家桥站",
+      "name": "石家桥",
+      "type": "小站",
       "lat": 31.632,
       "lon": 121.462,
-      "num": 5,
-      "audio": true
+      "englishName": "石家桥站"
     },
     {
-      "name": "堡镇北路陈海公路站",
+      "name": "堡镇北路陈海公路",
+      "type": "小站",
       "lat": 31.635,
       "lon": 121.465,
-      "num": 6,
-      "audio": true
+      "englishName": "堡镇北路陈海公路站"
     },
     {
-      "name": "牌楼头站",
+      "name": "牌楼头",
+      "type": "小站",
       "lat": 31.638,
       "lon": 121.468,
-      "num": 7,
-      "audio": true
+      "englishName": "牌楼头站"
     },
     {
-      "name": "港沿派出所站",
+      "name": "港沿派出所",
+      "type": "小站",
       "lat": 31.641000000000002,
       "lon": 121.471,
-      "num": 8,
-      "audio": true
+      "englishName": "港沿派出所站"
     },
     {
-      "name": "港沿菜场站",
+      "name": "港沿菜场",
+      "type": "小站",
       "lat": 31.644000000000002,
       "lon": 121.474,
-      "num": 9,
-      "audio": true
+      "englishName": "港沿菜场站"
     },
     {
-      "name": "港沿镇站",
+      "name": "港沿镇",
+      "type": "小站",
       "lat": 31.647000000000002,
       "lon": 121.477,
-      "num": 10,
-      "audio": true
+      "englishName": "港沿镇站"
     },
     {
-      "name": "四号桥站",
+      "name": "四号桥",
+      "type": "小站",
       "lat": 31.650000000000002,
       "lon": 121.48,
-      "num": 11,
-      "audio": true
+      "englishName": "四号桥站"
     },
     {
-      "name": "齐乐村站",
+      "name": "齐乐村",
+      "type": "小站",
       "lat": 31.653000000000002,
       "lon": 121.483,
-      "num": 12,
-      "audio": true
+      "englishName": "齐乐村站"
     },
     {
-      "name": "富国村站",
+      "name": "富国村",
+      "type": "小站",
       "lat": 31.656000000000002,
       "lon": 121.486,
-      "num": 13,
-      "audio": true
+      "englishName": "富国村站"
     },
     {
-      "name": "大东村站",
+      "name": "大东村",
+      "type": "小站",
       "lat": 31.659000000000002,
       "lon": 121.489,
-      "num": 14,
-      "audio": true
+      "englishName": "大东村站"
     },
     {
-      "name": "草港公路前竖公路站",
+      "name": "草港公路前竖公路",
+      "type": "小站",
       "lat": 31.662000000000003,
       "lon": 121.492,
-      "num": 15,
-      "audio": true
+      "englishName": "草港公路前竖公路站"
     },
     {
-      "name": "富民街站",
+      "name": "富民街",
+      "type": "小站",
       "lat": 31.665000000000003,
       "lon": 121.495,
-      "num": 16,
-      "audio": true
+      "englishName": "富民街站"
     },
     {
-      "name": "育才村站",
+      "name": "育才村",
+      "type": "小站",
       "lat": 31.668,
       "lon": 121.498,
-      "num": 17,
-      "audio": true
+      "englishName": "育才村站"
     },
     {
-      "name": "大椿一队站",
+      "name": "大椿一队",
+      "type": "小站",
       "lat": 31.671,
       "lon": 121.501,
-      "num": 18,
-      "audio": true
+      "englishName": "大椿一队站"
     },
     {
-      "name": "永丰小店站",
+      "name": "永丰小店",
+      "type": "小站",
       "lat": 31.674,
       "lon": 121.504,
-      "num": 19,
-      "audio": true
+      "englishName": "永丰小店站"
     },
     {
-      "name": "永丰村站",
+      "name": "永丰村",
+      "type": "小站",
       "lat": 31.677,
       "lon": 121.507,
-      "num": 20,
-      "audio": true
+      "englishName": "永丰村站"
     },
     {
-      "name": "新民镇站",
+      "name": "新民镇",
+      "type": "小站",
       "lat": 31.68,
       "lon": 121.51,
-      "num": 21,
-      "audio": true
+      "englishName": "新民镇站"
     },
     {
-      "name": "民生村站",
+      "name": "民生村",
+      "type": "小站",
       "lat": 31.683,
       "lon": 121.513,
-      "num": 22,
-      "audio": true
+      "englishName": "民生村站"
     },
     {
-      "name": "为民商店站",
+      "name": "为民商店",
+      "type": "小站",
       "lat": 31.686,
       "lon": 121.516,
-      "num": 23,
-      "audio": true
+      "englishName": "为民商店站"
     },
     {
-      "name": "草港公路蟠龙公路站",
+      "name": "草港公路蟠龙公路",
+      "type": "小站",
       "lat": 31.689,
       "lon": 121.519,
-      "num": 24,
-      "audio": true
+      "englishName": "草港公路蟠龙公路站"
     },
     {
-      "name": "草港公路建设公路站",
+      "name": "草港公路建设公路",
+      "type": "小站",
       "lat": 31.692,
       "lon": 121.522,
-      "num": 25,
-      "audio": true
+      "englishName": "草港公路建设公路站"
     },
     {
-      "name": "三星村站",
+      "name": "三星村",
+      "type": "小站",
       "lat": 31.695,
       "lon": 121.525,
-      "num": 26,
-      "audio": true
+      "englishName": "三星村站"
     },
     {
-      "name": "尼姑庵站",
+      "name": "尼姑庵",
+      "type": "小站",
       "lat": 31.698,
       "lon": 121.528,
-      "num": 27,
-      "audio": true
+      "englishName": "尼姑庵站"
     },
     {
-      "name": "西门路鼓浪屿路站",
+      "name": "西门路鼓浪屿路",
+      "type": "小站",
       "lat": 31.701,
       "lon": 121.531,
-      "num": 28,
-      "audio": true
+      "englishName": "西门路鼓浪屿路站"
     },
     {
-      "name": "崇明中学站",
+      "name": "崇明中学",
+      "type": "小站",
       "lat": 31.704,
       "lon": 121.534,
-      "num": 29,
-      "audio": true
+      "englishName": "崇明中学站"
     },
     {
-      "name": "育林中学站",
+      "name": "育林中学",
+      "type": "小站",
       "lat": 31.707,
       "lon": 121.537,
-      "num": 30,
-      "audio": true
+      "englishName": "育林中学站"
     },
     {
-      "name": "电大站",
+      "name": "电大",
+      "type": "小站",
       "lat": 31.71,
       "lon": 121.54,
-      "num": 31,
-      "audio": true
+      "englishName": "电大站"
     },
     {
-      "name": "东门路玉环路站",
+      "name": "东门路玉环路",
+      "type": "小站",
       "lat": 31.713,
       "lon": 121.543,
-      "num": 32,
-      "audio": true
+      "englishName": "东门路玉环路站"
     },
     {
-      "name": "东门站",
+      "name": "东门",
+      "type": "小站",
       "lat": 31.716,
       "lon": 121.546,
-      "num": 33,
-      "audio": true
+      "englishName": "东门站"
     },
     {
-      "name": "中心医院站",
+      "name": "中心医院",
+      "type": "终点站",
       "lat": 31.719,
       "lon": 121.549,
-      "num": 34,
-      "audio": true
-    },
+      "englishName": "中心医院站"
+    }
+  ],
+  "down": [
     {
-      "name": "南门汽车站",
+      "name": "南门汽车",
+      "type": "起点站",
       "lat": 31.62,
       "lon": 121.45,
-      "num": 35,
-      "audio": true
+      "englishName": "南门汽车站"
     },
     {
-      "name": "中心医院站",
+      "name": "中心医院",
+      "type": "小站",
       "lat": 31.617,
       "lon": 121.453,
-      "num": 36,
-      "audio": true
+      "englishName": "中心医院站"
     },
     {
-      "name": "东门站",
+      "name": "东门",
+      "type": "小站",
       "lat": 31.614,
       "lon": 121.456,
-      "num": 37,
-      "audio": true
+      "englishName": "东门站"
     },
     {
-      "name": "东门路玉环路站",
+      "name": "东门路玉环路",
+      "type": "小站",
       "lat": 31.611,
       "lon": 121.459,
-      "num": 38,
-      "audio": true
+      "englishName": "东门路玉环路站"
     },
     {
-      "name": "桥镇站",
+      "name": "桥镇",
+      "type": "小站",
       "lat": 31.608,
       "lon": 121.462,
-      "num": 39,
-      "audio": true
+      "englishName": "桥镇站"
     },
     {
-      "name": "育林中学站",
+      "name": "育林中学",
+      "type": "小站",
       "lat": 31.605,
       "lon": 121.465,
-      "num": 40,
-      "audio": true
+      "englishName": "育林中学站"
     },
     {
-      "name": "崇明中学站",
+      "name": "崇明中学",
+      "type": "小站",
       "lat": 31.602,
       "lon": 121.468,
-      "num": 41,
-      "audio": true
+      "englishName": "崇明中学站"
     },
     {
-      "name": "静南小区站",
+      "name": "静南小区",
+      "type": "小站",
       "lat": 31.599,
       "lon": 121.471,
-      "num": 42,
-      "audio": true
+      "englishName": "静南小区站"
     },
     {
-      "name": "牛路站",
+      "name": "牛路",
+      "type": "小站",
       "lat": 31.596,
       "lon": 121.474,
-      "num": 43,
-      "audio": true
+      "englishName": "牛路站"
     },
     {
-      "name": "三星村站",
+      "name": "三星村",
+      "type": "小站",
       "lat": 31.593,
       "lon": 121.477,
-      "num": 44,
-      "audio": true
+      "englishName": "三星村站"
     },
     {
-      "name": "富安村站",
+      "name": "富安村",
+      "type": "小站",
       "lat": 31.59,
       "lon": 121.48,
-      "num": 45,
-      "audio": true
+      "englishName": "富安村站"
     },
     {
-      "name": "蟠龙村站",
+      "name": "蟠龙村",
+      "type": "小站",
       "lat": 31.587,
       "lon": 121.483,
-      "num": 46,
-      "audio": true
+      "englishName": "蟠龙村站"
     },
     {
-      "name": "民生村站",
+      "name": "民生村",
+      "type": "小站",
       "lat": 31.584,
       "lon": 121.486,
-      "num": 47,
-      "audio": true
+      "englishName": "民生村站"
     },
     {
-      "name": "平南村站",
+      "name": "平南村",
+      "type": "小站",
       "lat": 31.581,
       "lon": 121.489,
-      "num": 48,
-      "audio": true
+      "englishName": "平南村站"
     },
     {
-      "name": "群英村站",
+      "name": "群英村",
+      "type": "小站",
       "lat": 31.578,
       "lon": 121.492,
-      "num": 49,
-      "audio": true
+      "englishName": "群英村站"
     },
     {
-      "name": "永丰小店站",
+      "name": "永丰小店",
+      "type": "小站",
       "lat": 31.575,
       "lon": 121.495,
-      "num": 50,
-      "audio": true
+      "englishName": "永丰小店站"
     },
     {
-      "name": "大椿一队站",
+      "name": "大椿一队",
+      "type": "小站",
       "lat": 31.572000000000003,
       "lon": 121.498,
-      "num": 51,
-      "audio": true
+      "englishName": "大椿一队站"
     },
     {
-      "name": "育才村站",
+      "name": "育才村",
+      "type": "小站",
       "lat": 31.569000000000003,
       "lon": 121.501,
-      "num": 52,
-      "audio": true
+      "englishName": "育才村站"
     },
     {
-      "name": "直河港桥站",
+      "name": "直河港桥",
+      "type": "小站",
       "lat": 31.566000000000003,
       "lon": 121.504,
-      "num": 53,
-      "audio": true
+      "englishName": "直河港桥站"
     },
     {
-      "name": "草港公路前竖公路站",
+      "name": "草港公路前竖公路",
+      "type": "小站",
       "lat": 31.563000000000002,
       "lon": 121.507,
-      "num": 54,
-      "audio": true
+      "englishName": "草港公路前竖公路站"
     },
     {
-      "name": "大东村站",
+      "name": "大东村",
+      "type": "小站",
       "lat": 31.560000000000002,
       "lon": 121.51,
-      "num": 55,
-      "audio": true
+      "englishName": "大东村站"
     },
     {
-      "name": "富国村站",
+      "name": "富国村",
+      "type": "小站",
       "lat": 31.557000000000002,
       "lon": 121.513,
-      "num": 56,
-      "audio": true
+      "englishName": "富国村站"
     },
     {
-      "name": "齐乐村站",
+      "name": "齐乐村",
+      "type": "小站",
       "lat": 31.554000000000002,
       "lon": 121.516,
-      "num": 57,
-      "audio": true
+      "englishName": "齐乐村站"
     },
     {
-      "name": "四号桥站",
+      "name": "四号桥",
+      "type": "小站",
       "lat": 31.551000000000002,
       "lon": 121.519,
-      "num": 58,
-      "audio": true
+      "englishName": "四号桥站"
     },
     {
-      "name": "粮站",
+      "name": "粮",
+      "type": "小站",
       "lat": 31.548000000000002,
       "lon": 121.522,
-      "num": 59,
-      "audio": true
+      "englishName": "粮站"
     },
     {
-      "name": "港沿菜场站",
+      "name": "港沿菜场",
+      "type": "小站",
       "lat": 31.545,
       "lon": 121.525,
-      "num": 60,
-      "audio": true
+      "englishName": "港沿菜场站"
     },
     {
-      "name": "南马桥站",
+      "name": "南马桥",
+      "type": "小站",
       "lat": 31.542,
       "lon": 121.528,
-      "num": 61,
-      "audio": true
+      "englishName": "南马桥站"
     },
     {
-      "name": "二号机耕路站",
+      "name": "二号机耕路",
+      "type": "小站",
       "lat": 31.539,
       "lon": 121.531,
-      "num": 62,
-      "audio": true
+      "englishName": "二号机耕路站"
     },
     {
-      "name": "堡镇北路陈海公路站",
+      "name": "堡镇北路陈海公路",
+      "type": "小站",
       "lat": 31.536,
       "lon": 121.534,
-      "num": 63,
-      "audio": true
+      "englishName": "堡镇北路陈海公路站"
     },
     {
-      "name": "石家桥站",
+      "name": "石家桥",
+      "type": "小站",
       "lat": 31.533,
       "lon": 121.537,
-      "num": 64,
-      "audio": true
+      "englishName": "石家桥站"
     },
     {
-      "name": "酱酒二厂站",
+      "name": "酱酒二厂",
+      "type": "小站",
       "lat": 31.53,
       "lon": 121.54,
-      "num": 65,
-      "audio": true
+      "englishName": "酱酒二厂站"
     },
     {
-      "name": "堡镇医院站",
+      "name": "堡镇医院",
+      "type": "小站",
       "lat": 31.527,
       "lon": 121.543,
-      "num": 66,
-      "audio": true
+      "englishName": "堡镇医院站"
     },
     {
-      "name": "向阳路站",
+      "name": "向阳路",
+      "type": "小站",
       "lat": 31.524,
       "lon": 121.546,
-      "num": 67,
-      "audio": true
+      "englishName": "向阳路站"
     },
     {
-      "name": "化工路站",
+      "name": "化工路",
+      "type": "终点站",
       "lat": 31.521,
       "lon": 121.549,
-      "num": 68,
-      "audio": true
+      "englishName": "化工路站"
     }
   ]
 }

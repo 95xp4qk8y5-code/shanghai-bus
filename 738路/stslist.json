@@ -1,300 +1,301 @@
 {
-  "name": "738路",
-  "downOffset": 23,
-  "stations": [
+  "lineName": "738路（凯伦三语）",
+  "up": [
     {
-      "name": "陕西北路南京西路站",
+      "name": "陕西北路南京西路",
+      "type": "起点站",
       "lat": 31.23,
       "lon": 121.45,
-      "num": 1,
-      "audio": true
+      "englishName": "陕西北路南京西路站"
     },
     {
-      "name": "江宁路康定路站",
+      "name": "江宁路康定路",
+      "type": "小站",
       "lat": 31.235,
       "lon": 121.455,
-      "num": 2,
-      "audio": true
+      "englishName": "江宁路康定路站"
     },
     {
-      "name": "江宁路海防路站",
+      "name": "江宁路海防路",
+      "type": "小站",
       "lat": 31.240000000000002,
       "lon": 121.46000000000001,
-      "num": 3,
-      "audio": true
+      "englishName": "江宁路海防路站"
     },
     {
-      "name": "江宁路澳门路站",
+      "name": "江宁路澳门路",
+      "type": "小站",
       "lat": 31.245,
       "lon": 121.465,
-      "num": 4,
-      "audio": true
+      "englishName": "江宁路澳门路站"
     },
     {
-      "name": "光新路中山北路站",
+      "name": "光新路中山北路",
+      "type": "小站",
       "lat": 31.25,
       "lon": 121.47,
-      "num": 5,
-      "audio": true
+      "englishName": "光新路中山北路站"
     },
     {
-      "name": "石泉路岚皋路站",
+      "name": "石泉路岚皋路",
+      "type": "小站",
       "lat": 31.255,
       "lon": 121.47500000000001,
-      "num": 6,
-      "audio": true
+      "englishName": "石泉路岚皋路站"
     },
     {
-      "name": "岚皋路华池路站",
+      "name": "岚皋路华池路",
+      "type": "小站",
       "lat": 31.26,
       "lon": 121.48,
-      "num": 7,
-      "audio": true
+      "englishName": "岚皋路华池路站"
     },
     {
-      "name": "灵石路新村路站",
+      "name": "灵石路新村路",
+      "type": "小站",
       "lat": 31.265,
       "lon": 121.485,
-      "num": 8,
-      "audio": true
+      "englishName": "灵石路新村路站"
     },
     {
-      "name": "华灵路灵石路站",
+      "name": "华灵路灵石路",
+      "type": "小站",
       "lat": 31.27,
       "lon": 121.49000000000001,
-      "num": 9,
-      "audio": true
+      "englishName": "华灵路灵石路站"
     },
     {
-      "name": "华灵路大华三路站",
+      "name": "华灵路大华三路",
+      "type": "小站",
       "lat": 31.275000000000002,
       "lon": 121.495,
-      "num": 10,
-      "audio": true
+      "englishName": "华灵路大华三路站"
     },
     {
-      "name": "华灵路新沪路站",
+      "name": "华灵路新沪路",
+      "type": "小站",
       "lat": 31.28,
       "lon": 121.5,
-      "num": 11,
-      "audio": true
+      "englishName": "华灵路新沪路站"
     },
     {
-      "name": "华灵西路大华路站",
+      "name": "华灵西路大华路",
+      "type": "小站",
       "lat": 31.285,
       "lon": 121.50500000000001,
-      "num": 12,
-      "audio": true
+      "englishName": "华灵西路大华路站"
     },
     {
-      "name": "大华路行知路站",
+      "name": "大华路行知路",
+      "type": "小站",
       "lat": 31.29,
       "lon": 121.51,
-      "num": 13,
-      "audio": true
+      "englishName": "大华路行知路站"
     },
     {
-      "name": "行知路真华路站",
+      "name": "行知路真华路",
+      "type": "小站",
       "lat": 31.295,
       "lon": 121.515,
-      "num": 14,
-      "audio": true
+      "englishName": "行知路真华路站"
     },
     {
-      "name": "行知路真金路站",
+      "name": "行知路真金路",
+      "type": "小站",
       "lat": 31.3,
       "lon": 121.52,
-      "num": 15,
-      "audio": true
+      "englishName": "行知路真金路站"
     },
     {
-      "name": "真金路华灵路站",
+      "name": "真金路华灵路",
+      "type": "小站",
       "lat": 31.305,
       "lon": 121.525,
-      "num": 16,
-      "audio": true
+      "englishName": "真金路华灵路站"
     },
     {
-      "name": "古浪路真北路站",
+      "name": "古浪路真北路",
+      "type": "小站",
       "lat": 31.31,
       "lon": 121.53,
-      "num": 17,
-      "audio": true
+      "englishName": "古浪路真北路站"
     },
     {
-      "name": "古浪路桃浦西路站",
+      "name": "古浪路桃浦西路",
+      "type": "小站",
       "lat": 31.315,
       "lon": 121.535,
-      "num": 18,
-      "audio": true
+      "englishName": "古浪路桃浦西路站"
     },
     {
-      "name": "祁安路古浪路站",
+      "name": "祁安路古浪路",
+      "type": "小站",
       "lat": 31.32,
       "lon": 121.54,
-      "num": 19,
-      "audio": true
+      "englishName": "祁安路古浪路站"
     },
     {
-      "name": "祁安路停车场站",
+      "name": "祁安路停车场",
+      "type": "小站",
       "lat": 31.325,
       "lon": 121.545,
-      "num": 20,
-      "audio": true
+      "englishName": "祁安路停车场站"
     },
     {
-      "name": "祁安路站",
+      "name": "祁安路",
+      "type": "小站",
       "lat": 31.330000000000002,
       "lon": 121.55,
-      "num": 21,
-      "audio": true
+      "englishName": "祁安路站"
     },
     {
-      "name": "祁安路站",
+      "name": "祁安路",
+      "type": "终点站",
       "lat": 31.335,
       "lon": 121.555,
-      "num": 22,
-      "audio": true
-    },
+      "englishName": "祁安路站"
+    }
+  ],
+  "down": [
     {
-      "name": "祁安路站",
+      "name": "祁安路",
+      "type": "起点站",
       "lat": 31.23,
       "lon": 121.45,
-      "num": 23,
-      "audio": true
+      "englishName": "祁安路站"
     },
     {
-      "name": "祁安路古浪路站",
+      "name": "祁安路古浪路",
+      "type": "小站",
       "lat": 31.225,
       "lon": 121.455,
-      "num": 24,
-      "audio": true
+      "englishName": "祁安路古浪路站"
     },
     {
-      "name": "古浪路桃浦西路站",
+      "name": "古浪路桃浦西路",
+      "type": "小站",
       "lat": 31.22,
       "lon": 121.46000000000001,
-      "num": 25,
-      "audio": true
+      "englishName": "古浪路桃浦西路站"
     },
     {
-      "name": "古浪路真北路站",
+      "name": "古浪路真北路",
+      "type": "小站",
       "lat": 31.215,
       "lon": 121.465,
-      "num": 26,
-      "audio": true
+      "englishName": "古浪路真北路站"
     },
     {
-      "name": "真金路华灵路站",
+      "name": "真金路华灵路",
+      "type": "小站",
       "lat": 31.21,
       "lon": 121.47,
-      "num": 27,
-      "audio": true
+      "englishName": "真金路华灵路站"
     },
     {
-      "name": "行知路真金路站",
+      "name": "行知路真金路",
+      "type": "小站",
       "lat": 31.205000000000002,
       "lon": 121.47500000000001,
-      "num": 28,
-      "audio": true
+      "englishName": "行知路真金路站"
     },
     {
-      "name": "行知路真华路站",
+      "name": "行知路真华路",
+      "type": "小站",
       "lat": 31.2,
       "lon": 121.48,
-      "num": 29,
-      "audio": true
+      "englishName": "行知路真华路站"
     },
     {
-      "name": "大华路行知路站",
+      "name": "大华路行知路",
+      "type": "小站",
       "lat": 31.195,
       "lon": 121.485,
-      "num": 30,
-      "audio": true
+      "englishName": "大华路行知路站"
     },
     {
-      "name": "华灵路大华路站",
+      "name": "华灵路大华路",
+      "type": "小站",
       "lat": 31.19,
       "lon": 121.49000000000001,
-      "num": 31,
-      "audio": true
+      "englishName": "华灵路大华路站"
     },
     {
-      "name": "华灵路新沪路站",
+      "name": "华灵路新沪路",
+      "type": "小站",
       "lat": 31.185,
       "lon": 121.495,
-      "num": 32,
-      "audio": true
+      "englishName": "华灵路新沪路站"
     },
     {
-      "name": "华灵路大华三路站",
+      "name": "华灵路大华三路",
+      "type": "小站",
       "lat": 31.18,
       "lon": 121.5,
-      "num": 33,
-      "audio": true
+      "englishName": "华灵路大华三路站"
     },
     {
-      "name": "华灵路灵石路站",
+      "name": "华灵路灵石路",
+      "type": "小站",
       "lat": 31.175,
       "lon": 121.50500000000001,
-      "num": 34,
-      "audio": true
+      "englishName": "华灵路灵石路站"
     },
     {
-      "name": "灵石路新村路站",
+      "name": "灵石路新村路",
+      "type": "小站",
       "lat": 31.17,
       "lon": 121.51,
-      "num": 35,
-      "audio": true
+      "englishName": "灵石路新村路站"
     },
     {
-      "name": "华池路岚皋路站",
+      "name": "华池路岚皋路",
+      "type": "小站",
       "lat": 31.165,
       "lon": 121.515,
-      "num": 36,
-      "audio": true
+      "englishName": "华池路岚皋路站"
     },
     {
-      "name": "华池路旬阳路站",
+      "name": "华池路旬阳路",
+      "type": "小站",
       "lat": 31.16,
       "lon": 121.52,
-      "num": 37,
-      "audio": true
+      "englishName": "华池路旬阳路站"
     },
     {
-      "name": "汉阴路石泉路站",
+      "name": "汉阴路石泉路",
+      "type": "小站",
       "lat": 31.155,
       "lon": 121.525,
-      "num": 38,
-      "audio": true
+      "englishName": "汉阴路石泉路站"
     },
     {
-      "name": "光新路中山北路站",
+      "name": "光新路中山北路",
+      "type": "小站",
       "lat": 31.150000000000002,
       "lon": 121.53,
-      "num": 39,
-      "audio": true
+      "englishName": "光新路中山北路站"
     },
     {
-      "name": "江宁路澳门路站",
+      "name": "江宁路澳门路",
+      "type": "小站",
       "lat": 31.145,
       "lon": 121.535,
-      "num": 40,
-      "audio": true
+      "englishName": "江宁路澳门路站"
     },
     {
-      "name": "江宁路海防路站",
+      "name": "江宁路海防路",
+      "type": "小站",
       "lat": 31.14,
       "lon": 121.54,
-      "num": 41,
-      "audio": true
+      "englishName": "江宁路海防路站"
     },
     {
-      "name": "江宁路康定路站",
+      "name": "江宁路康定路",
+      "type": "终点站",
       "lat": 31.135,
       "lon": 121.545,
-      "num": 42,
-      "audio": true
+      "englishName": "江宁路康定路站"
     }
   ]
 }

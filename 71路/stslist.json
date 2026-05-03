@@ -1,335 +1,336 @@
 {
-  "name": "71路",
-  "downOffset": 24,
-  "stations": [
+  "lineName": "71路（凯伦三语）",
+  "up": [
     {
-      "name": "申昆路枢纽站",
+      "name": "申昆路枢纽",
+      "type": "起点站",
       "lat": 31.23,
       "lon": 121.45,
-      "num": 1,
-      "audio": true
+      "englishName": "申昆路枢纽站"
     },
     {
-      "name": "吴宝路站",
+      "name": "吴宝路",
+      "type": "小站",
       "lat": 31.235,
       "lon": 121.455,
-      "num": 2,
-      "audio": true
+      "englishName": "吴宝路站"
     },
     {
-      "name": "航新路站",
+      "name": "航新路",
+      "type": "小站",
       "lat": 31.240000000000002,
       "lon": 121.46000000000001,
-      "num": 3,
-      "audio": true
+      "englishName": "航新路站"
     },
     {
-      "name": "航东路站",
+      "name": "航东路",
+      "type": "小站",
       "lat": 31.245,
       "lon": 121.465,
-      "num": 4,
-      "audio": true
+      "englishName": "航东路站"
     },
     {
-      "name": "外环路站",
+      "name": "外环路",
+      "type": "小站",
       "lat": 31.25,
       "lon": 121.47,
-      "num": 5,
-      "audio": true
+      "englishName": "外环路站"
     },
     {
-      "name": "虹井路站",
+      "name": "虹井路",
+      "type": "小站",
       "lat": 31.255,
       "lon": 121.47500000000001,
-      "num": 6,
-      "audio": true
+      "englishName": "虹井路站"
     },
     {
-      "name": "剑河路站",
+      "name": "剑河路",
+      "type": "小站",
       "lat": 31.26,
       "lon": 121.48,
-      "num": 7,
-      "audio": true
+      "englishName": "剑河路站"
     },
     {
-      "name": "虹梅路站",
+      "name": "虹梅路",
+      "type": "小站",
       "lat": 31.265,
       "lon": 121.485,
-      "num": 8,
-      "audio": true
+      "englishName": "虹梅路站"
     },
     {
-      "name": "虹许路站",
+      "name": "虹许路",
+      "type": "小站",
       "lat": 31.27,
       "lon": 121.49000000000001,
-      "num": 9,
-      "audio": true
+      "englishName": "虹许路站"
     },
     {
-      "name": "水城南路站",
+      "name": "水城南路",
+      "type": "小站",
       "lat": 31.275000000000002,
       "lon": 121.495,
-      "num": 10,
-      "audio": true
+      "englishName": "水城南路站"
     },
     {
-      "name": "娄山关路站",
+      "name": "娄山关路",
+      "type": "小站",
       "lat": 31.28,
       "lon": 121.5,
-      "num": 11,
-      "audio": true
+      "englishName": "娄山关路站"
     },
     {
-      "name": "凯旋路站",
+      "name": "凯旋路",
+      "type": "小站",
       "lat": 31.285,
       "lon": 121.50500000000001,
-      "num": 12,
-      "audio": true
+      "englishName": "凯旋路站"
     },
     {
-      "name": "定西路站",
+      "name": "定西路",
+      "type": "小站",
       "lat": 31.29,
       "lon": 121.51,
-      "num": 13,
-      "audio": true
+      "englishName": "定西路站"
     },
     {
-      "name": "番禺路站",
+      "name": "番禺路",
+      "type": "小站",
       "lat": 31.295,
       "lon": 121.515,
-      "num": 14,
-      "audio": true
+      "englishName": "番禺路站"
     },
     {
-      "name": "江苏路站",
+      "name": "江苏路",
+      "type": "小站",
       "lat": 31.3,
       "lon": 121.52,
-      "num": 15,
-      "audio": true
+      "englishName": "江苏路站"
     },
     {
-      "name": "镇宁路站",
+      "name": "镇宁路",
+      "type": "小站",
       "lat": 31.305,
       "lon": 121.525,
-      "num": 16,
-      "audio": true
+      "englishName": "镇宁路站"
     },
     {
-      "name": "华山路站",
+      "name": "华山路",
+      "type": "小站",
       "lat": 31.31,
       "lon": 121.53,
-      "num": 17,
-      "audio": true
+      "englishName": "华山路站"
     },
     {
-      "name": "常德路站",
+      "name": "常德路",
+      "type": "小站",
       "lat": 31.315,
       "lon": 121.535,
-      "num": 18,
-      "audio": true
+      "englishName": "常德路站"
     },
     {
-      "name": "上海展览中心站",
+      "name": "上海展览中心",
+      "type": "小站",
       "lat": 31.32,
       "lon": 121.54,
-      "num": 19,
-      "audio": true
+      "englishName": "上海展览中心站"
     },
     {
-      "name": "茂名北路站",
+      "name": "茂名北路",
+      "type": "小站",
       "lat": 31.325,
       "lon": 121.545,
-      "num": 20,
-      "audio": true
+      "englishName": "茂名北路站"
     },
     {
-      "name": "成都北路站",
+      "name": "成都北路",
+      "type": "小站",
       "lat": 31.330000000000002,
       "lon": 121.55,
-      "num": 21,
-      "audio": true
+      "englishName": "成都北路站"
     },
     {
-      "name": "黄陂北路站",
+      "name": "黄陂北路",
+      "type": "小站",
       "lat": 31.335,
       "lon": 121.555,
-      "num": 22,
-      "audio": true
+      "englishName": "黄陂北路站"
     },
     {
-      "name": "西藏中路站",
+      "name": "西藏中路",
+      "type": "终点站",
       "lat": 31.34,
       "lon": 121.56,
-      "num": 23,
-      "audio": true
-    },
+      "englishName": "西藏中路站"
+    }
+  ],
+  "down": [
     {
-      "name": "延安东路外滩站",
+      "name": "延安东路外滩",
+      "type": "起点站",
       "lat": 31.23,
       "lon": 121.45,
-      "num": 24,
-      "audio": true
+      "englishName": "延安东路外滩站"
     },
     {
-      "name": "西藏中路站",
+      "name": "西藏中路",
+      "type": "小站",
       "lat": 31.225,
       "lon": 121.455,
-      "num": 25,
-      "audio": true
+      "englishName": "西藏中路站"
     },
     {
-      "name": "黄陂北路站",
+      "name": "黄陂北路",
+      "type": "小站",
       "lat": 31.22,
       "lon": 121.46000000000001,
-      "num": 26,
-      "audio": true
+      "englishName": "黄陂北路站"
     },
     {
-      "name": "成都北路站",
+      "name": "成都北路",
+      "type": "小站",
       "lat": 31.215,
       "lon": 121.465,
-      "num": 27,
-      "audio": true
+      "englishName": "成都北路站"
     },
     {
-      "name": "茂名北路站",
+      "name": "茂名北路",
+      "type": "小站",
       "lat": 31.21,
       "lon": 121.47,
-      "num": 28,
-      "audio": true
+      "englishName": "茂名北路站"
     },
     {
-      "name": "上海展览中心站",
+      "name": "上海展览中心",
+      "type": "小站",
       "lat": 31.205000000000002,
       "lon": 121.47500000000001,
-      "num": 29,
-      "audio": true
+      "englishName": "上海展览中心站"
     },
     {
-      "name": "常德路站",
+      "name": "常德路",
+      "type": "小站",
       "lat": 31.2,
       "lon": 121.48,
-      "num": 30,
-      "audio": true
+      "englishName": "常德路站"
     },
     {
-      "name": "华山路站",
+      "name": "华山路",
+      "type": "小站",
       "lat": 31.195,
       "lon": 121.485,
-      "num": 31,
-      "audio": true
+      "englishName": "华山路站"
     },
     {
-      "name": "镇宁路站",
+      "name": "镇宁路",
+      "type": "小站",
       "lat": 31.19,
       "lon": 121.49000000000001,
-      "num": 32,
-      "audio": true
+      "englishName": "镇宁路站"
     },
     {
-      "name": "江苏路站",
+      "name": "江苏路",
+      "type": "小站",
       "lat": 31.185,
       "lon": 121.495,
-      "num": 33,
-      "audio": true
+      "englishName": "江苏路站"
     },
     {
-      "name": "番禺路站",
+      "name": "番禺路",
+      "type": "小站",
       "lat": 31.18,
       "lon": 121.5,
-      "num": 34,
-      "audio": true
+      "englishName": "番禺路站"
     },
     {
-      "name": "定西路站",
+      "name": "定西路",
+      "type": "小站",
       "lat": 31.175,
       "lon": 121.50500000000001,
-      "num": 35,
-      "audio": true
+      "englishName": "定西路站"
     },
     {
-      "name": "凯旋路站",
+      "name": "凯旋路",
+      "type": "小站",
       "lat": 31.17,
       "lon": 121.51,
-      "num": 36,
-      "audio": true
+      "englishName": "凯旋路站"
     },
     {
-      "name": "娄山关路站",
+      "name": "娄山关路",
+      "type": "小站",
       "lat": 31.165,
       "lon": 121.515,
-      "num": 37,
-      "audio": true
+      "englishName": "娄山关路站"
     },
     {
-      "name": "水城南路站",
+      "name": "水城南路",
+      "type": "小站",
       "lat": 31.16,
       "lon": 121.52,
-      "num": 38,
-      "audio": true
+      "englishName": "水城南路站"
     },
     {
-      "name": "虹许路站",
+      "name": "虹许路",
+      "type": "小站",
       "lat": 31.155,
       "lon": 121.525,
-      "num": 39,
-      "audio": true
+      "englishName": "虹许路站"
     },
     {
-      "name": "虹梅路站",
+      "name": "虹梅路",
+      "type": "小站",
       "lat": 31.150000000000002,
       "lon": 121.53,
-      "num": 40,
-      "audio": true
+      "englishName": "虹梅路站"
     },
     {
-      "name": "剑河路站",
+      "name": "剑河路",
+      "type": "小站",
       "lat": 31.145,
       "lon": 121.535,
-      "num": 41,
-      "audio": true
+      "englishName": "剑河路站"
     },
     {
-      "name": "虹井路站",
+      "name": "虹井路",
+      "type": "小站",
       "lat": 31.14,
       "lon": 121.54,
-      "num": 42,
-      "audio": true
+      "englishName": "虹井路站"
     },
     {
-      "name": "外环路站",
+      "name": "外环路",
+      "type": "小站",
       "lat": 31.135,
       "lon": 121.545,
-      "num": 43,
-      "audio": true
+      "englishName": "外环路站"
     },
     {
-      "name": "航东路站",
+      "name": "航东路",
+      "type": "小站",
       "lat": 31.13,
       "lon": 121.55,
-      "num": 44,
-      "audio": true
+      "englishName": "航东路站"
     },
     {
-      "name": "航新路站",
+      "name": "航新路",
+      "type": "小站",
       "lat": 31.125,
       "lon": 121.555,
-      "num": 45,
-      "audio": true
+      "englishName": "航新路站"
     },
     {
-      "name": "吴宝路站",
+      "name": "吴宝路",
+      "type": "小站",
       "lat": 31.12,
       "lon": 121.56,
-      "num": 46,
-      "audio": true
+      "englishName": "吴宝路站"
     },
     {
-      "name": "申昆路枢纽站",
+      "name": "申昆路枢纽",
+      "type": "终点站",
       "lat": 31.115000000000002,
       "lon": 121.565,
-      "num": 47,
-      "audio": true
+      "englishName": "申昆路枢纽站"
     }
   ]
 }

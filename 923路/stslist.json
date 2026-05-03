@@ -1,419 +1,420 @@
 {
-  "name": "923路",
-  "downOffset": 31,
-  "stations": [
+  "lineName": "923路（凯伦三语）",
+  "up": [
     {
-      "name": "环镇南路真朋路站",
+      "name": "环镇南路真朋路",
+      "type": "起点站",
       "lat": 31.23,
       "lon": 121.45,
-      "num": 1,
-      "audio": true
+      "englishName": "环镇南路真朋路站"
     },
     {
-      "name": "真大路环镇南路站",
+      "name": "真大路环镇南路",
+      "type": "小站",
       "lat": 31.235,
       "lon": 121.455,
-      "num": 2,
-      "audio": true
+      "englishName": "真大路环镇南路站"
     },
     {
-      "name": "华和路真大路站",
+      "name": "华和路真大路",
+      "type": "小站",
       "lat": 31.240000000000002,
       "lon": 121.46000000000001,
-      "num": 3,
-      "audio": true
+      "englishName": "华和路真大路站"
     },
     {
-      "name": "华和路真北路站",
+      "name": "华和路真北路",
+      "type": "小站",
       "lat": 31.245,
       "lon": 121.465,
-      "num": 4,
-      "audio": true
+      "englishName": "华和路真北路站"
     },
     {
-      "name": "真华路华和路站",
+      "name": "真华路华和路",
+      "type": "小站",
       "lat": 31.25,
       "lon": 121.47,
-      "num": 5,
-      "audio": true
+      "englishName": "真华路华和路站"
     },
     {
-      "name": "真华路汶水路站",
+      "name": "真华路汶水路",
+      "type": "小站",
       "lat": 31.255,
       "lon": 121.47500000000001,
-      "num": 6,
-      "audio": true
+      "englishName": "真华路汶水路站"
     },
     {
-      "name": "行知路真华路站",
+      "name": "行知路真华路",
+      "type": "小站",
       "lat": 31.26,
       "lon": 121.48,
-      "num": 7,
-      "audio": true
+      "englishName": "行知路真华路站"
     },
     {
-      "name": "大华路行知路站",
+      "name": "大华路行知路",
+      "type": "小站",
       "lat": 31.265,
       "lon": 121.485,
-      "num": 8,
-      "audio": true
+      "englishName": "大华路行知路站"
     },
     {
-      "name": "华灵西路大华路站",
+      "name": "华灵西路大华路",
+      "type": "小站",
       "lat": 31.27,
       "lon": 121.49000000000001,
-      "num": 9,
-      "audio": true
+      "englishName": "华灵西路大华路站"
     },
     {
-      "name": "华灵路新沪路站",
+      "name": "华灵路新沪路",
+      "type": "小站",
       "lat": 31.275000000000002,
       "lon": 121.495,
-      "num": 10,
-      "audio": true
+      "englishName": "华灵路新沪路站"
     },
     {
-      "name": "华灵路大华三路站",
+      "name": "华灵路大华三路",
+      "type": "小站",
       "lat": 31.28,
       "lon": 121.5,
-      "num": 11,
-      "audio": true
+      "englishName": "华灵路大华三路站"
     },
     {
-      "name": "华灵路灵石路站",
+      "name": "华灵路灵石路",
+      "type": "小站",
       "lat": 31.285,
       "lon": 121.50500000000001,
-      "num": 12,
-      "audio": true
+      "englishName": "华灵路灵石路站"
     },
     {
-      "name": "灵石路新村路站",
+      "name": "灵石路新村路",
+      "type": "小站",
       "lat": 31.29,
       "lon": 121.51,
-      "num": 13,
-      "audio": true
+      "englishName": "灵石路新村路站"
     },
     {
-      "name": "新村路新沪路站",
+      "name": "新村路新沪路",
+      "type": "小站",
       "lat": 31.295,
       "lon": 121.515,
-      "num": 14,
-      "audio": true
+      "englishName": "新村路新沪路站"
     },
     {
-      "name": "新村路香泉路站",
+      "name": "新村路香泉路",
+      "type": "小站",
       "lat": 31.3,
       "lon": 121.52,
-      "num": 15,
-      "audio": true
+      "englishName": "新村路香泉路站"
     },
     {
-      "name": "真华路新村路站",
+      "name": "真华路新村路",
+      "type": "小站",
       "lat": 31.305,
       "lon": 121.525,
-      "num": 16,
-      "audio": true
+      "englishName": "真华路新村路站"
     },
     {
-      "name": "真华路礼泉路站",
+      "name": "真华路礼泉路",
+      "type": "小站",
       "lat": 31.31,
       "lon": 121.53,
-      "num": 17,
-      "audio": true
+      "englishName": "真华路礼泉路站"
     },
     {
-      "name": "礼泉路曹杨路站",
+      "name": "礼泉路曹杨路",
+      "type": "小站",
       "lat": 31.315,
       "lon": 121.535,
-      "num": 18,
-      "audio": true
+      "englishName": "礼泉路曹杨路站"
     },
     {
-      "name": "曹杨路南石路站",
+      "name": "曹杨路南石路",
+      "type": "小站",
       "lat": 31.32,
       "lon": 121.54,
-      "num": 19,
-      "audio": true
+      "englishName": "曹杨路南石路站"
     },
     {
-      "name": "曹杨路兰溪路站",
+      "name": "曹杨路兰溪路",
+      "type": "小站",
       "lat": 31.325,
       "lon": 121.545,
-      "num": 20,
-      "audio": true
+      "englishName": "曹杨路兰溪路站"
     },
     {
-      "name": "曹杨路白玉路站",
+      "name": "曹杨路白玉路",
+      "type": "小站",
       "lat": 31.330000000000002,
       "lon": 121.55,
-      "num": 21,
-      "audio": true
+      "englishName": "曹杨路白玉路站"
     },
     {
-      "name": "曹杨路谈家渡路站",
+      "name": "曹杨路谈家渡路",
+      "type": "小站",
       "lat": 31.335,
       "lon": 121.555,
-      "num": 22,
-      "audio": true
+      "englishName": "曹杨路谈家渡路站"
     },
     {
-      "name": "江苏北路长宁路站",
+      "name": "江苏北路长宁路",
+      "type": "小站",
       "lat": 31.34,
       "lon": 121.56,
-      "num": 23,
-      "audio": true
+      "englishName": "江苏北路长宁路站"
     },
     {
-      "name": "江苏路愚园路站",
+      "name": "江苏路愚园路",
+      "type": "小站",
       "lat": 31.345,
       "lon": 121.565,
-      "num": 24,
-      "audio": true
+      "englishName": "江苏路愚园路站"
     },
     {
-      "name": "江苏路延安西路站",
+      "name": "江苏路延安西路",
+      "type": "小站",
       "lat": 31.35,
       "lon": 121.57000000000001,
-      "num": 25,
-      "audio": true
+      "englishName": "江苏路延安西路站"
     },
     {
-      "name": "华山路江苏路站",
+      "name": "华山路江苏路",
+      "type": "小站",
       "lat": 31.355,
       "lon": 121.575,
-      "num": 26,
-      "audio": true
+      "englishName": "华山路江苏路站"
     },
     {
-      "name": "华山路湖南路站",
+      "name": "华山路湖南路",
+      "type": "小站",
       "lat": 31.36,
       "lon": 121.58,
-      "num": 27,
-      "audio": true
+      "englishName": "华山路湖南路站"
     },
     {
-      "name": "交通大学站",
+      "name": "交通大学",
+      "type": "小站",
       "lat": 31.365000000000002,
       "lon": 121.58500000000001,
-      "num": 28,
-      "audio": true
+      "englishName": "交通大学站"
     },
     {
-      "name": "徐家汇站",
+      "name": "徐家汇",
+      "type": "小站",
       "lat": 31.37,
       "lon": 121.59,
-      "num": 29,
-      "audio": true
+      "englishName": "徐家汇站"
     },
     {
-      "name": "上海体育馆站",
+      "name": "上海体育馆",
+      "type": "终点站",
       "lat": 31.375,
       "lon": 121.595,
-      "num": 30,
-      "audio": true
-    },
+      "englishName": "上海体育馆站"
+    }
+  ],
+  "down": [
     {
-      "name": "上海体育馆站",
+      "name": "上海体育馆",
+      "type": "起点站",
       "lat": 31.23,
       "lon": 121.45,
-      "num": 31,
-      "audio": true
+      "englishName": "上海体育馆站"
     },
     {
-      "name": "漕溪北路裕德路站",
+      "name": "漕溪北路裕德路",
+      "type": "小站",
       "lat": 31.225,
       "lon": 121.455,
-      "num": 32,
-      "audio": true
+      "englishName": "漕溪北路裕德路站"
     },
     {
-      "name": "徐家汇站",
+      "name": "徐家汇",
+      "type": "小站",
       "lat": 31.22,
       "lon": 121.46000000000001,
-      "num": 33,
-      "audio": true
+      "englishName": "徐家汇站"
     },
     {
-      "name": "交通大学站",
+      "name": "交通大学",
+      "type": "小站",
       "lat": 31.215,
       "lon": 121.465,
-      "num": 34,
-      "audio": true
+      "englishName": "交通大学站"
     },
     {
-      "name": "华山路湖南路站",
+      "name": "华山路湖南路",
+      "type": "小站",
       "lat": 31.21,
       "lon": 121.47,
-      "num": 35,
-      "audio": true
+      "englishName": "华山路湖南路站"
     },
     {
-      "name": "江苏路延安西路站",
+      "name": "江苏路延安西路",
+      "type": "小站",
       "lat": 31.205000000000002,
       "lon": 121.47500000000001,
-      "num": 36,
-      "audio": true
+      "englishName": "江苏路延安西路站"
     },
     {
-      "name": "江苏路愚园路站",
+      "name": "江苏路愚园路",
+      "type": "小站",
       "lat": 31.2,
       "lon": 121.48,
-      "num": 37,
-      "audio": true
+      "englishName": "江苏路愚园路站"
     },
     {
-      "name": "江苏北路长宁路站",
+      "name": "江苏北路长宁路",
+      "type": "小站",
       "lat": 31.195,
       "lon": 121.485,
-      "num": 38,
-      "audio": true
+      "englishName": "江苏北路长宁路站"
     },
     {
-      "name": "曹杨路谈家渡路站",
+      "name": "曹杨路谈家渡路",
+      "type": "小站",
       "lat": 31.19,
       "lon": 121.49000000000001,
-      "num": 39,
-      "audio": true
+      "englishName": "曹杨路谈家渡路站"
     },
     {
-      "name": "曹杨路白玉路站",
+      "name": "曹杨路白玉路",
+      "type": "小站",
       "lat": 31.185,
       "lon": 121.495,
-      "num": 40,
-      "audio": true
+      "englishName": "曹杨路白玉路站"
     },
     {
-      "name": "曹杨路兰溪路站",
+      "name": "曹杨路兰溪路",
+      "type": "小站",
       "lat": 31.18,
       "lon": 121.5,
-      "num": 41,
-      "audio": true
+      "englishName": "曹杨路兰溪路站"
     },
     {
-      "name": "曹杨路南石路站",
+      "name": "曹杨路南石路",
+      "type": "小站",
       "lat": 31.175,
       "lon": 121.50500000000001,
-      "num": 42,
-      "audio": true
+      "englishName": "曹杨路南石路站"
     },
     {
-      "name": "曹杨路礼泉路站",
+      "name": "曹杨路礼泉路",
+      "type": "小站",
       "lat": 31.17,
       "lon": 121.51,
-      "num": 43,
-      "audio": true
+      "englishName": "曹杨路礼泉路站"
     },
     {
-      "name": "真华南路礼泉路站",
+      "name": "真华南路礼泉路",
+      "type": "小站",
       "lat": 31.165,
       "lon": 121.515,
-      "num": 44,
-      "audio": true
+      "englishName": "真华南路礼泉路站"
     },
     {
-      "name": "真华路新村路站",
+      "name": "真华路新村路",
+      "type": "小站",
       "lat": 31.16,
       "lon": 121.52,
-      "num": 45,
-      "audio": true
+      "englishName": "真华路新村路站"
     },
     {
-      "name": "新村路香泉路站",
+      "name": "新村路香泉路",
+      "type": "小站",
       "lat": 31.155,
       "lon": 121.525,
-      "num": 46,
-      "audio": true
+      "englishName": "新村路香泉路站"
     },
     {
-      "name": "新村路新沪路站",
+      "name": "新村路新沪路",
+      "type": "小站",
       "lat": 31.150000000000002,
       "lon": 121.53,
-      "num": 47,
-      "audio": true
+      "englishName": "新村路新沪路站"
     },
     {
-      "name": "灵石路新村路站",
+      "name": "灵石路新村路",
+      "type": "小站",
       "lat": 31.145,
       "lon": 121.535,
-      "num": 48,
-      "audio": true
+      "englishName": "灵石路新村路站"
     },
     {
-      "name": "华灵路灵石路站",
+      "name": "华灵路灵石路",
+      "type": "小站",
       "lat": 31.14,
       "lon": 121.54,
-      "num": 49,
-      "audio": true
+      "englishName": "华灵路灵石路站"
     },
     {
-      "name": "华灵路大华三路站",
+      "name": "华灵路大华三路",
+      "type": "小站",
       "lat": 31.135,
       "lon": 121.545,
-      "num": 50,
-      "audio": true
+      "englishName": "华灵路大华三路站"
     },
     {
-      "name": "华灵路新沪路站",
+      "name": "华灵路新沪路",
+      "type": "小站",
       "lat": 31.13,
       "lon": 121.55,
-      "num": 51,
-      "audio": true
+      "englishName": "华灵路新沪路站"
     },
     {
-      "name": "华灵西路大华路站",
+      "name": "华灵西路大华路",
+      "type": "小站",
       "lat": 31.125,
       "lon": 121.555,
-      "num": 52,
-      "audio": true
+      "englishName": "华灵西路大华路站"
     },
     {
-      "name": "大华路行知路站",
+      "name": "大华路行知路",
+      "type": "小站",
       "lat": 31.12,
       "lon": 121.56,
-      "num": 53,
-      "audio": true
+      "englishName": "大华路行知路站"
     },
     {
-      "name": "行知路真华路站",
+      "name": "行知路真华路",
+      "type": "小站",
       "lat": 31.115000000000002,
       "lon": 121.565,
-      "num": 54,
-      "audio": true
+      "englishName": "行知路真华路站"
     },
     {
-      "name": "真华路汶水路站",
+      "name": "真华路汶水路",
+      "type": "小站",
       "lat": 31.11,
       "lon": 121.57000000000001,
-      "num": 55,
-      "audio": true
+      "englishName": "真华路汶水路站"
     },
     {
-      "name": "真华路华和路站",
+      "name": "真华路华和路",
+      "type": "小站",
       "lat": 31.105,
       "lon": 121.575,
-      "num": 56,
-      "audio": true
+      "englishName": "真华路华和路站"
     },
     {
-      "name": "华和路真北路站",
+      "name": "华和路真北路",
+      "type": "小站",
       "lat": 31.1,
       "lon": 121.58,
-      "num": 57,
-      "audio": true
+      "englishName": "华和路真北路站"
     },
     {
-      "name": "华和路真大路站",
+      "name": "华和路真大路",
+      "type": "小站",
       "lat": 31.095,
       "lon": 121.58500000000001,
-      "num": 58,
-      "audio": true
+      "englishName": "华和路真大路站"
     },
     {
-      "name": "真大路环镇南路站",
+      "name": "真大路环镇南路",
+      "type": "终点站",
       "lat": 31.09,
       "lon": 121.59,
-      "num": 59,
-      "audio": true
+      "englishName": "真大路环镇南路站"
     }
   ]
 }
