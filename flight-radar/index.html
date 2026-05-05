@@ -152,7 +152,8 @@ async function fetchData(){
   const c=centers[currentCenter];
   const radius=document.getElementById('radius-select').value;
   const airline=document.getElementById('airline-filter').value;
-  const url=`https://api.adsb.lol/v2/lat/${c.lat}/lon/${c.lon}/dist/${radius}`;
+  const apiUrl=`https://api.adsb.lol/v2/lat/${c.lat}/lon/${c.lon}/dist/${radius}`;
+  const url=`https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
   try{
     const resp=await fetch(url);
     if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
