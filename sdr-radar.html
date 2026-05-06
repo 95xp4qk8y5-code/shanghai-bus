@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📡 SDR 雷达 - 本地 ADS-B</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,'PingFang SC',sans-serif;background:#0a0e14;color:#c8ccd4;height:100vh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;padding:10px 16px;background:#11161e;border-bottom:1px solid #1e2733;gap:16px;flex-shrink:0}
+.top h1{font-size:1.1em;color:#39bae6}
+.top .stat{font-size:0.78em;padding:3px 10px;background:#161e28;border-radius:12px;border:1px solid #252e3a}
+.top .stat b{color:#ffad33}
+.top .live{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:0.75em}
+.top .live .dot{width:7px;height:7px;border-radius:50%;background:#7fd962;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.main{display:flex;flex:1;overflow:hidden}
+#map{flex:1;background:#0a0e14}
+.sidebar{width:340px;background:#11161e;border-left:1px solid #1e2733;display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
+.sidebar-header{padding:10px 14px;border-bottom:1px solid #1e2733;display:flex;justify-content:space-between;align-items:center;font-size:0.82em}
+.sidebar-header span{color:#5c6773}
+.flight-list{flex:1;overflow-y:auto;padding:6px}
+.flight-card{background:#161e28;border-radius:8px;padding:8px 10px;margin-bottom:5px;border-left:3px solid #252e3a;cursor:pointer;font-size:0.8em}
+.flight-card:hover{background:#1c2533;border-left-color:#39bae6}
+.flight-card .call{font-weight:700;color:#e6eaef;font-size:1.05em}
+.flight-card .reg{color:#5c6773;font-size:0.8em}
+.flight-card .row{display:flex;gap:12px;margin-top:3px;font-size:0.78em}
+.flight-card .row span{color:#7d8794}
+.flight-card .val{color:#ffad33}
+.alt-hi{color:#ff6bb5}.alt-med{color:#39bae6}.alt-lo{color:#ffd560}.alt-gnd{color:#5c6773}
+.empty{text-align:center;color:#3a414d;padding:40px;font-size:0.9em}
+.signal-bar{display:flex;align-items:center;gap:4px;margin-top:2px}
+.signal-bar .bar{width:3px;height:10px;background:#252e3a;border-radius:1px}
+.signal-bar .bar.on{background:#7fd962}
+.leaflet-container{background:#0a0e14!important}
+.leaflet-control-zoom a{background:#161e28!important;color:#c8ccd4!important;border-color:#252e3a!important}
+.leaflet-popup-content-wrapper{background:#11161e;color:#c8ccd4;border:1px solid #1e2733;border-radius:10px}
+.leaflet-popup-tip{background:#11161e}
+
+@media(max-width:700px){
+  .sidebar{width:100%;position:absolute;bottom:0;left:0;height:38%;z-index:999;border-top:1px solid #1e2733;display:none}
+  .sidebar.open{display:flex}
+  .toggle-btn{display:block!important}
+}
+.toggle-btn{display:none;position:absolute;bottom:10px;right:10px;z-index:1000;background:#161e28;border:1px solid #252e3a;color:#c8ccd4;border-radius:8px;padding:8px 14px;font-size:0.85em;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <h1>📡 SDR 雷达</h1>
+  <div class="stat">✈️ <b id="s-count">—</b></div>
+  <div class="stat">📶 <b id="s-rssi">—</b></div>
+  <div class="stat">📨 <b id="s-msg">—</b></div>
+  <div class="stat">🏠 <b id="s-range">—</b></div>
+  <div class="live"><span class="dot"></span><span id="s-time">—</span></div>
+</div>
+
+<div class="main">
+  <div id="map"></div>
+  <button class="toggle-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">📋 列表</button>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <span>航班列表</span><span id="s-list-total"></span>
+    </div>
+    <div class="flight-list" id="flight-list">
+      <div class="empty">📡 等待数据...</div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('map',{zoomControl:true,attributionControl:false}).setView([31.23,121.47],9);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
+
+const layer = L.layerGroup().addTo(map);
+const markerMap = {};
+let maxRange = 0;
+
+function planeIcon(track, alt, ground){
+  const rot = track || 0, size = ground ? 12 : 16;
+  let c = '#7fd962';
+  if(alt !== null){
+    if(alt > 35000) c = '#ff6bb5';
+    else if(alt > 20000) c = '#39bae6';
+    else if(alt > 5000) c = '#ffd560';
+    else if(alt > 0) c = '#7fd962';
+  }
+  if(ground) c = '#5c6773';
+  const w = size+6, h = size+6;
+  return L.divIcon({
+    html: `<svg width="${w}" height="${h}"><g transform="translate(${w/2},${h/2})rotate(${rot})"><path d="M0,-${size/2}L${size/3},${size/2}L0,${size/5}L-${size/3},${size/2}Z" fill="${c}" opacity="0.92"/></g></svg>`,
+    className:'', iconSize:[w,h], iconAnchor:[w/2,h/2]
+  });
+}
+
+function altClass(a){
+  if(a===null||a===undefined) return '';
+  if(a>35000) return 'alt-hi';
+  if(a>20000) return 'alt-med';
+  if(a>5000) return 'alt-lo';
+  return 'alt-gnd';
+}
+
+function signalBars(rssi){
+  let n = 0;
+  if(rssi > -30) n=4; else if(rssi > -25) n=3; else if(rssi > -20) n=2; else if(rssi > -15) n=1;
+  return [...Array(4)].map((_,i)=>`<span class="bar${i<n?' on':''}"></span>`).join('');
+}
+
+function airline(cs){
+  const map={CES:'东航',CSN:'南航',CCA:'国航',CSC:'川航',CXA:'厦航',CSZ:'深航',CQH:'春秋',GCR:'天航',HDA:'国泰',CAL:'华航',EVA:'长荣',SIA:'新航',ANA:'全日空',JAL:'日航',KAL:'大韩',UAE:'阿联酋',QTR:'卡塔尔',BAW:'英航',AFR:'法航',DLH:'汉莎',UAL:'美联航',DAL:'达美'};
+  return map[cs?.slice(0,3)]||cs?.slice(0,3)||'?';
+}
+
+async function tick(){
+  try{
+    const resp = await fetch('http://localhost:8090/aircraft.json');
+    const data = await resp.json();
+    const ac = (data.aircraft || []).filter(a => a.lat && a.lon);
+    render(ac, data.messages || 0);
+  } catch(e) {
+    document.getElementById('s-time').textContent = '离线';
+    document.querySelector('.live .dot').style.background = '#f26d78';
+  }
+}
+
+function render(planes, msgs){
+  const now = new Date().toLocaleTimeString('zh-CN',{hour12:false});
+  document.getElementById('s-time').textContent = now;
+  document.getElementById('s-msg').textContent = msgs;
+  document.getElementById('s-count').textContent = planes.length;
+  document.querySelector('.live .dot').style.background = '#7fd962';
+  document.getElementById('s-list-total').textContent = `(${planes.length})`;
+
+  // Signal stats
+  const rssis = planes.map(p=>p.rssi).filter(r=>r!=null);
+  const avgRssi = rssis.length ? (rssis.reduce((a,b)=>a+b,0)/rssis.length).toFixed(1) : '—';
+  document.getElementById('s-rssi').textContent = avgRssi + 'dB';
+
+  layer.clearLayers();
+
+  planes.forEach(p => {
+    const alt = p.alt_geom || p.alt_baro;
+    const gnd = alt !== null && alt <= 0;
+    const icon = planeIcon(p.track, alt, gnd);
+    const m = L.marker([p.lat, p.lon], {icon}).addTo(layer);
+
+    // Range from center
+    const dist = map.distance([31.23,121.47], [p.lat, p.lon]) / 1000;
+    if(dist > maxRange) { maxRange = dist; document.getElementById('s-range').textContent = Math.round(maxRange)+'km'; }
+
+    const cs = (p.flight||'').trim()||'N/A';
+    const altStr = alt !== null ? `${Math.round(alt)}ft (${Math.round(alt*0.3048)}m)` : '—';
+    const spd = p.gs !== null ? `${Math.round(p.gs*1.852)}km/h` : '—';
+    const rssi = p.rssi !== null ? p.rssi.toFixed(1)+'dB' : '—';
+    const bars = signalBars(p.rssi||-40);
+
+    m.bindPopup(`<div style="min-width:150px">
+      <b style="font-size:1.1em">${cs}</b><br>
+      <span style="color:#5c6773">${airline(cs)} · ${p.hex||'?'}</span><br>
+      <span style="color:#39bae6">📏 ${altStr}</span><br>
+      <span>💨 ${spd} &nbsp; 🧭 ${p.track!=null?Math.round(p.track)+'°':'—'}</span><br>
+      <span>📶 ${rssi}</span> <span style="display:inline-flex;gap:2px;vertical-align:middle">${bars}</span>
+    </div>`);
+    markerMap[p.hex||cs] = m;
+  });
+
+  // Sidebar
+  const list = document.getElementById('flight-list');
+  if(!planes.length){
+    list.innerHTML = '<div class="empty">🛰️ 暂无带位置的飞机<br><span style="font-size:0.8em">正在监听 1090MHz...</span></div>';
+    return;
+  }
+  list.innerHTML = planes.sort((a,b)=>{
+    const aa = a.alt_geom||a.alt_baro||0, ba = b.alt_geom||b.alt_baro||0;
+    return ba - aa;
+  }).map(p => {
+    const cs = (p.flight||'').trim()||'N/A';
+    const alt = p.alt_geom||p.alt_baro;
+    const altStr = alt!==null?`${Math.round(alt*0.3048)}m`:'—';
+    const spd = p.gs!==null?`${Math.round(p.gs*1.852)}km/h`:'—';
+    const rssi = p.rssi!==null?p.rssi.toFixed(0)+'dB':'—';
+    const gnd = alt!==null && alt<=0;
+    const ac = altClass(alt);
+    return `<div class="flight-card" onclick="flyTo(${p.lat},${p.lon},'${p.hex||cs}')">
+      <div style="display:flex;justify-content:space-between">
+        <span class="call">${cs}</span>
+        <span class="${ac}">${gnd?'🅿️':'✈️'} ${altStr}</span>
+      </div>
+      <div class="row">
+        <span>💨 <b class="val">${spd}</b></span>
+        <span>🧭 <b class="val">${p.track!=null?Math.round(p.track)+'°':'—'}</b></span>
+        <span>📶 <b class="val">${rssi}</b></span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function flyTo(lat,lon,key){map.setView([lat,lon],11);markerMap[key]?.openPopup();}
+
+tick();
+setInterval(tick, 2000);
+</script>
+</body>
+</html>
