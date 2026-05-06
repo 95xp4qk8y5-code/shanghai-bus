@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🚌 上海公交小可爱</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700&display=swap');
 
@@ -16,7 +15,6 @@
     --sky: #87CEEB;
     --peach: #FFDAB9;
     --lavender: #E6E6FA;
-    --yellow: #FFFACD;
     --coral: #FF7F7F;
     --text: #5C4B51;
   }
@@ -128,17 +126,11 @@
   .tag-71 { background: #E8F5E9; border-color: var(--mint); color: #388E3C; }
 
   .route-card {
-    margin: 12px 20px;
+    margin: 12px 20px 8px;
     padding: 16px;
     background: linear-gradient(135deg, #FFF5F5, #FFF0F5);
     border-radius: 20px;
     border: 2px solid var(--pink);
-    display: none;
-  }
-  .route-card.active { display: block; animation: cardIn 0.4s ease-out; }
-  @keyframes cardIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
   }
   .route-card .route-name {
     font-size: 20px;
@@ -180,7 +172,7 @@
   .bus-detail .stop-name { font-size: 14px; font-weight: 700; color: var(--text); }
   .bus-detail .arrival { font-size: 12px; color: #999; }
   .bus-eta {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     font-family: 'ZCOOL KuaiLe', cursive;
     color: var(--coral);
@@ -190,7 +182,6 @@
 
   .stops-section {
     padding: 0 20px;
-    margin-top: 8px;
     margin-bottom: 12px;
   }
   .stops-section h3 {
@@ -271,6 +262,15 @@
     to { opacity: 1; transform: translateX(-50%) translateY(0); }
   }
 
+  .no-buses {
+    text-align: center;
+    padding: 20px;
+    color: #bbb;
+    font-size: 14px;
+  }
+
+  .amap-logo, .amap-copyright { display: none !important; }
+
   @media (max-width: 768px) {
     body { flex-direction: column; }
     .sidebar { width: 100%; max-height: 42vh; }
@@ -301,9 +301,9 @@
     <span class="tag" style="background:#FFF3E0;border-color:#FFCC80;color:#E65100;" onclick="quickSearch('南堡支线')">南堡支线</span>
   </div>
 
-  <div class="route-card active" id="routeCard">
-    <div class="route-name" id="routeName">—</div>
-    <div class="route-info" id="routeInfo">—</div>
+  <div class="route-card" id="routeCard">
+    <div class="route-name" id="routeName">🚌 加载中...</div>
+    <div class="route-info" id="routeInfo"></div>
     <div class="bus-list" id="busList">
       <div class="loading"><div class="spinner"></div><br>正在找车车~ 🚌</div>
     </div>
@@ -315,7 +315,7 @@
   </div>
 
   <div class="footer">
-    🐱 公交迷の小天地 · 数据来自高德地图实时公交
+    🐱 公交迷の小天地 · 数据来自高德地图
   </div>
 </div>
 
@@ -325,210 +325,210 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-// ============ Config ============
-const AMAP_KEY = '1c6391e097e980e9d0a251d870395352';
-const SH_CENTER = [31.2304, 121.4737];
-
-// ============ Map ============
-const map = L.map('map', {
-  center: SH_CENTER,
-  zoom: 13,
-  zoomControl: false
-});
-
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '© OSM',
-  subdomains: 'abcd',
-  maxZoom: 19
-}).addTo(map);
-
-L.control.zoom({ position: 'bottomright' }).addTo(map);
-
+window._AMapSecurityConfig = { securityJsCode: '' };
+</script>
+<script src="https://webapi.amap.com/v2/maps?v=2.0&key=1c6391e097e980e9d0a251d870395352&plugin=AMap.BusSearch,AMap.LineSearch"></script>
+<script>
 // ============ State ============
+let currentLineId = null;
+let currentBusStops = [];
 let busMarkers = [];
 let routePolyline = null;
-let currentRoute = null;
+let timer = null;
 
-const ROUTE_COLORS = ['#FF7F7F','#87CEEB','#CE93D8','#FFD54F','#388E3C','#E65100','#FF80AB','#80DEEA','#B39DDB'];
+// Pink theme for AMap
+const map = new AMap.Map('map', {
+  center: [121.4737, 31.2304],
+  zoom: 13,
+  mapStyle: 'amap://styles/light',
+  resizeEnable: true
+});
 
-// ============ Build route from AMap API ============
-function fetchAndDisplay(query) {
-  document.getElementById('routeCard').classList.add('active');
-  document.getElementById('routeName').textContent = '查询中...';
+// ============ Search Bus ============
+function searchBus() {
+  const q = document.getElementById('busSearch').value.trim();
+  if (!q) return toast('请输入线路号~ 🐱');
+  document.getElementById('routeName').textContent = '🔍 查询中...';
   document.getElementById('routeInfo').textContent = '';
-  document.getElementById('busList').innerHTML = '<div class="loading"><div class="spinner"></div><br>正在联网查询~ 🌐</div>';
+  document.getElementById('busList').innerHTML = '<div class="loading"><div class="spinner"></div><br>正在连线高德~ 🌐</div>';
   document.getElementById('stopsSection').style.display = 'none';
 
-  // Step 1: Get bus line info
-  const url1 = `https://restapi.amap.com/v3/bus/linename?s=rsv3&extensions=all&key=${AMAP_KEY}&output=json&city=上海&offset=1&keywords=${encodeURIComponent(query)}`;
-  
-  fetch(url1)
+  const busSearch = new AMap.BusSearch({
+    city: '上海',
+    pageSize: 1,
+    extensions: 'all'
+  });
+
+  busSearch.search(q, function(status, result) {
+    if (status !== 'complete' || !result.list || result.list.length === 0) {
+      document.getElementById('routeName').textContent = '没找到 😿';
+      document.getElementById('busList').innerHTML = '<div class="no-buses">这条线路没查到，试试其他关键词~ 🐱<br><br>比如搜完整的"510路"</div>';
+      return;
+    }
+    const line = result.list[0];
+    displayRoute(line);
+  });
+}
+
+function quickSearch(k) {
+  document.getElementById('busSearch').value = k;
+  searchBus();
+}
+
+// ============ Display Route ============
+function displayRoute(line) {
+  currentLineId = line.id;
+  const stops = line.busstops || [];
+  currentBusStops = stops;
+  const color = '#FF7F7F';
+
+  document.getElementById('routeName').textContent = line.name;
+  document.getElementById('routeInfo').textContent = `${line.start_stop} ➜ ${line.end_stop} · 首${line.start_time||'?'} 末${line.end_time||'?'}`;
+
+  // Render stops
+  const ss = document.getElementById('stopsSection');
+  const sl = document.getElementById('stopsList');
+  sl.innerHTML = stops.map((s, i) => `
+    <div class="stop-item" onclick="map.setCenter([${s.location.lng},${s.location.lat}]);map.setZoom(16)">
+      <span class="stop-dot"></span>
+      <span>${s.name}</span>
+      ${i === 0 ? '<span style="margin-left:auto;font-size:11px;color:var(--mint)">起点</span>' : ''}
+      ${i === stops.length-1 ? '<span style="margin-left:auto;font-size:11px;color:var(--pink)">终点</span>' : ''}
+    </div>
+  `).join('');
+  ss.style.display = 'block';
+
+  // Update map
+  updateMap(stops, []);
+
+  // Fetch real-time buses
+  fetchRealtime(line.id, stops, line);
+}
+
+function fetchRealtime(lineId, stops, line) {
+  // Use AMap's real-time bus API
+  const url = `https://restapi.amap.com/v3/bus/realtime?key=1c6391e097e980e9d0a251d870395352&output=json&city=上海&extensions=all&buslineid=${lineId}`;
+
+  fetch(url)
     .then(r => r.json())
-    .then(data => {
-      if (data.status !== '1' || !data.buslines || data.buslines.length === 0) {
-        document.getElementById('routeName').textContent = '没找到 😿';
-        document.getElementById('busList').innerHTML = '<div class="loading">这条线路不存在，试试其他线路吧~ 🐱</div>';
-        return;
+    .then(rt => {
+      let buses = [];
+      if (rt.status === '1' && rt.data && rt.data.buses) {
+        buses = rt.data.buses.map((b, i) => ({
+          id: `${lineId}-${i}`,
+          stop: b.stopname || '运营中',
+          eta: b.arrivaltime != null ? (b.arrivaltime + '分钟') : '—',
+          lng: b.location ? parseFloat(b.location.split(',')[0]) : null,
+          lat: b.location ? parseFloat(b.location.split(',')[1]) : null
+        }));
       }
 
-      const line = data.buslines[0];
-      const color = ROUTE_COLORS[Math.floor(Math.random() * ROUTE_COLORS.length)];
-
-      // Build stops from API
-      const stops = (line.busstops || []).map(s => ({
-        name: s.name,
-        lat: parseFloat(s.location.split(',')[1]),
-        lng: parseFloat(s.location.split(',')[0])
-      }));
-
-      // Update UI
-      document.getElementById('routeName').textContent = line.name;
-      document.getElementById('routeInfo').textContent = `${line.start_stop} ➜ ${line.end_stop} · 首班${line.start_time || '?'} 末班${line.end_time || '?'}`;
-
-      // Step 2: Get real-time buses
-      const id = line.id || line.virtual_bus_id || '';
-      const url2 = `https://restapi.amap.com/v3/bus/realtime?key=${AMAP_KEY}&output=json&city=上海&extensions=all&buslineid=${id}`;
-
-      fetch(url2)
-        .then(r => r.json())
-        .then(rt => {
-          let buses = [];
-          if (rt.status === '1' && rt.data && rt.data.buses) {
-            buses = rt.data.buses.map((b, i) => ({
-              id: `${query}-${i}`,
-              stop: b.stopname || '运营中',
-              eta: b.arrivaltime != null ? (b.arrivaltime + '分钟') : '—',
-              lat: b.location ? parseFloat(b.location.split(',')[1]) : null,
-              lng: b.location ? parseFloat(b.location.split(',')[0]) : null
-            }));
-          }
-
-          // Find which stops have buses nearby
-          const busStops = new Set(buses.map(b => b.stop));
-
-          // Render buses
-          const busList = document.getElementById('busList');
-          if (buses.length === 0) {
-            busList.innerHTML = '<div class="loading">🐱 暂无运行动态，可能是末班车已过~</div>';
-          } else {
-            busList.innerHTML = buses.map(b => `
-              <div class="bus-item" onclick="flyToBus(${b.lat},${b.lng})">
-                <span class="bus-icon">🚌</span>
-                <div class="bus-detail">
-                  <div class="stop-name">${b.stop}</div>
-                  <div class="arrival">${line.name} · 往${line.end_stop}</div>
-                </div>
-                <div class="bus-eta">${b.eta}</div>
-              </div>
-            `).join('');
-          }
-
-          // Render stops
-          const stopsSection = document.getElementById('stopsSection');
-          const stopsList = document.getElementById('stopsList');
-          stopsList.innerHTML = stops.map((s, i) => {
-            const hasBus = busStops.has(s.name);
-            return `
-              <div class="stop-item ${hasBus ? 'here' : ''}" onclick="map.setView([${s.lat},${s.lng}], 16)">
-                <span class="stop-dot"></span>
-                <span>${s.name}${hasBus ? ' 🚌' : ''}</span>
-                ${i === 0 ? '<span style="margin-left:auto;font-size:11px;color:var(--mint)">起点</span>' : ''}
-                ${i === stops.length-1 ? '<span style="margin-left:auto;font-size:11px;color:var(--pink)">终点</span>' : ''}
-              </div>
-            `;
-          }).join('');
-          stopsSection.style.display = 'block';
-
-          // Update map
-          updateMap(stops, buses, color, line);
-
-          toast(`找到 ${line.name}，${buses.length}辆车运行中 🌸`);
-        })
-        .catch(() => {
-          document.getElementById('busList').innerHTML = '<div class="loading">实时数据暂时获取不到~ 🐱</div>';
-          const stopsSection = document.getElementById('stopsSection');
-          const stopsList = document.getElementById('stopsList');
-          stopsList.innerHTML = stops.map((s, i) => `
-            <div class="stop-item" onclick="map.setView([${s.lat},${s.lng}], 16)">
-              <span class="stop-dot"></span>
-              <span>${s.name}</span>
-              ${i === 0 ? '<span style="margin-left:auto;font-size:11px;color:var(--mint)">起点</span>' : ''}
-              ${i === stops.length-1 ? '<span style="margin-left:auto;font-size:11px;color:var(--pink)">终点</span>' : ''}
+      const bl = document.getElementById('busList');
+      if (buses.length === 0) {
+        bl.innerHTML = '<div class="no-buses">🐱 暂无运行动态~<br><span style="font-size:11px">可能末班已过或数据延迟</span></div>';
+      } else {
+        bl.innerHTML = buses.map(b => `
+          <div class="bus-item" onclick="focusBus(${b.lng},${b.lat})">
+            <span class="bus-icon">🚌</span>
+            <div class="bus-detail">
+              <div class="stop-name">${b.stop}</div>
+              <div class="arrival">${line.name} · 往${line.end_stop}</div>
             </div>
-          `).join('');
-          stopsSection.style.display = 'block';
-          updateMap(stops, [], color, line);
-        });
+            <div class="bus-eta">${b.eta}</div>
+          </div>
+        `).join('');
+      }
+
+      // Update stop markers with bus positions
+      const busStopNames = new Set(buses.map(b => b.stop));
+      document.querySelectorAll('.stop-item').forEach((el, i) => {
+        if (busStopNames.has(stops[i]?.name)) el.classList.add('here');
+        else el.classList.remove('here');
+      });
+
+      updateMap(stops, buses);
     })
-    .catch(e => {
-      document.getElementById('routeName').textContent = '网络错误 😿';
-      document.getElementById('busList').innerHTML = '<div class="loading">网络不太好，刷新试试~ 🌐</div>';
-      console.error(e);
+    .catch(() => {
+      document.getElementById('busList').innerHTML = '<div class="no-buses">实时数据获取失败 🐱<br><span style="font-size:11px">请稍后重试</span></div>';
     });
 }
 
-// ============ Map rendering ============
-function updateMap(stops, buses, color, line) {
-  busMarkers.forEach(m => map.removeLayer(m));
+// ============ Map ============
+function updateMap(stops, buses) {
+  // Clear
+  busMarkers.forEach(m => map.remove(m));
   busMarkers = [];
-  if (routePolyline) map.removeLayer(routePolyline);
+  if (routePolyline) routePolyline.setMap(null);
 
-  const coords = stops.map(s => [s.lat, s.lng]);
-  routePolyline = L.polyline(coords, {
-    color: color,
-    weight: 5,
-    opacity: 0.6,
-    dashArray: '12, 8'
-  }).addTo(map);
+  // Route polyline
+  const path = stops.map(s => [s.location.lng, s.location.lat]);
+  routePolyline = new AMap.Polyline({
+    path: path,
+    strokeColor: '#FF7F7F',
+    strokeWeight: 5,
+    strokeOpacity: 0.6,
+    strokeStyle: 'dashed',
+    strokeDasharray: [12, 8]
+  });
+  routePolyline.setMap(map);
 
   // Stop markers
   const busStopNames = new Set(buses.map(b => b.stop));
   stops.forEach((s, i) => {
     const hasBus = busStopNames.has(s.name);
-    const c = i === 0 ? '#4CAF50' : (i === stops.length-1 ? '#F44336' : (hasBus ? color : '#BDBDBD'));
-    const r = hasBus ? 9 : 5;
+    const color = i === 0 ? '#4CAF50' : (i === stops.length-1 ? '#F44336' : (hasBus ? '#FF7F7F' : '#BDBDBD'));
 
-    const m = L.circleMarker([s.lat, s.lng], {
-      radius: r, fillColor: c, color: '#fff', weight: 2, fillOpacity: 1
-    }).addTo(map);
-    m.bindTooltip(`<b>${s.name}</b><br>${line.name}`, { direction: 'top', offset: [0, -r-5] });
-    busMarkers.push(m);
+    const marker = new AMap.CircleMarker({
+      center: [s.location.lng, s.location.lat],
+      radius: hasBus ? 9 : 5,
+      fillColor: color,
+      fillOpacity: 1,
+      strokeColor: '#fff',
+      strokeWeight: 2,
+      zIndex: hasBus ? 100 : 1
+    });
+    marker.setMap(map);
+    marker.setTitle(s.name);
+    marker.on('click', () => {
+      map.setCenter([s.location.lng, s.location.lat]);
+      map.setZoom(16);
+    });
+    busMarkers.push(marker);
   });
 
   // Bus markers
   buses.forEach(b => {
-    if (!b.lat || !b.lng) return;
-    const icon = L.divIcon({
-      className: '',
-      html: '<div style="font-size:32px;filter:drop-shadow(2px 2px 2px rgba(0,0,0,0.3));animation:bounce 0.6s ease-in-out infinite">🚌</div>',
-      iconSize: [40, 40],
-      iconAnchor: [20, 20]
+    if (!b.lng || !b.lat) return;
+    const content = `<div style="font-size:24px;background:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);border:2px solid #FF7F7F">🚌</div>`;
+    const marker = new AMap.Marker({
+      position: [b.lng, b.lat],
+      content: content,
+      offset: new AMap.Pixel(-18, -18),
+      zIndex: 200
     });
-    const m = L.marker([b.lat, b.lng], { icon }).addTo(map);
-    m.bindPopup(`<b>${line.name}</b><br>📍 ${b.stop}<br>⏰ 预计 ${b.eta}`);
-    busMarkers.push(m);
+    marker.setMap(map);
+    marker.setTitle(`${b.stop} · ${b.eta}`);
+    busMarkers.push(marker);
   });
 
-  map.fitBounds(coords.length > 1 ? coords : [[coords[0][0]-0.01, coords[0][1]-0.01], [coords[0][0]+0.01, coords[0][1]+0.01]], { padding: [50, 50] });
+  // Fit bounds
+  if (path.length > 1) {
+    map.setFitView(null, false, [80, 80, 80, 400]);
+  } else if (path.length === 1) {
+    map.setCenter(path[0]);
+    map.setZoom(16);
+  }
 }
 
-function flyToBus(lat, lng) {
-  if (lat && lng) map.setView([lat, lng], 15, { animate: true });
+function focusBus(lng, lat) {
+  if (lng && lat) {
+    map.setCenter([lng, lat]);
+    map.setZoom(15);
+  }
 }
 
-function searchBus() {
-  const q = document.getElementById('busSearch').value.trim();
-  if (!q) return toast('请输入线路号~ 🐱');
-  fetchAndDisplay(q);
-}
-
-function quickSearch(k) {
-  document.getElementById('busSearch').value = k;
-  fetchAndDisplay(k);
-}
-
+// ============ Utils ============
 function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -537,7 +537,12 @@ function toast(msg) {
 }
 
 // ============ Init ============
-setTimeout(() => fetchAndDisplay('510'), 600);
+setTimeout(() => quickSearch('510'), 800);
+
+// Auto refresh every 30s
+setInterval(() => {
+  if (currentLineId) fetchRealtime(currentLineId, currentBusStops, { name: document.getElementById('routeName').textContent, end_stop: '' });
+}, 30000);
 </script>
 </body>
 </html>
