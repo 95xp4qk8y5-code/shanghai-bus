@@ -2,547 +2,427 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>🚌 上海公交小可爱</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;700&display=swap');
-
   * { margin:0; padding:0; box-sizing:border-box; }
-
-  :root {
-    --pink: #FFB6C1;
-    --mint: #98FB98;
-    --sky: #87CEEB;
-    --peach: #FFDAB9;
-    --lavender: #E6E6FA;
-    --coral: #FF7F7F;
-    --text: #5C4B51;
-  }
-
+  :root { --pink: #FFB6C1; --mint: #98FB98; --coral: #FF7F7F; --text: #5C4B51; }
   body {
-    font-family: 'Noto Sans SC', sans-serif;
-    background: var(--lavender);
+    font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #E6E6FA;
     overflow: hidden;
     height: 100vh; height: 100dvh;
     display: flex;
+    flex-direction: column;
   }
 
-  .sidebar {
-    width: 380px;
-    background: white;
-    box-shadow: 4px 0 20px rgba(255, 182, 193, 0.3);
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto;
+  .top-bar {
+    background: linear-gradient(135deg, #FFB6C1, #FFDAB9);
+    padding: 14px 16px;
+    text-align: center;
     flex-shrink: 0;
   }
-  .sidebar::-webkit-scrollbar { width: 6px; }
-  .sidebar::-webkit-scrollbar-thumb { background: var(--pink); border-radius: 10px; }
+  .top-bar h1 { font-size: 22px; color: white; text-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
 
-  .header {
-    background: linear-gradient(135deg, var(--pink), var(--peach));
-    padding: 20px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .header::after {
-    content: '🌈 ✨ 🐱 🌸 🎀';
-    position: absolute;
-    bottom: 5px;
-    left: 0; right: 0;
-    font-size: 14px;
-    opacity: 0.6;
-  }
-  .header h1 {
-    font-family: 'ZCOOL KuaiLe', cursive;
-    font-size: 28px;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
-    margin-bottom: 4px;
-  }
-  .header .subtitle {
-    font-size: 13px;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 12px;
-  }
-
-  .search-box {
+  .search-row {
     display: flex;
     gap: 8px;
-    padding: 0 20px;
+    padding: 8px 16px;
+    background: white;
+    flex-shrink: 0;
   }
-  .search-box input {
+  .search-row input {
     flex: 1;
-    padding: 10px 16px;
-    border: 3px solid var(--pink);
-    border-radius: 25px;
+    padding: 10px 14px;
+    border: 2px solid #FFB6C1;
+    border-radius: 20px;
     font-size: 15px;
     font-family: inherit;
     outline: none;
-    transition: all 0.3s;
   }
-  .search-box input:focus {
-    border-color: var(--coral);
-    box-shadow: 0 0 15px rgba(255, 182, 193, 0.4);
-  }
-  .search-box button {
-    padding: 10px 20px;
-    background: linear-gradient(135deg, var(--pink), var(--coral));
+  .search-row button {
+    padding: 10px 18px;
+    background: #FF7F7F;
     border: none;
-    border-radius: 25px;
+    border-radius: 20px;
     color: white;
     font-size: 15px;
     font-family: inherit;
     cursor: pointer;
-    transition: all 0.3s;
-    white-space: nowrap;
   }
-  .search-box button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(255, 127, 127, 0.4);
-  }
+  .search-row button:active { opacity: 0.8; }
 
-  .quick-lines {
+  .tags-row {
     display: flex;
-    gap: 8px;
-    padding: 12px 20px;
-    flex-wrap: wrap;
-  }
-  .quick-lines .tag {
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.3s;
-    border: 2px solid transparent;
-    font-family: inherit;
-  }
-  .tag-510 { background: #FFE4E1; border-color: var(--pink); color: var(--coral); }
-  .tag-985 { background: #E0F7FA; border-color: var(--sky); color: #0288D1; }
-  .tag-233 { background: #F3E5F5; border-color: #CE93D8; color: #7B1FA2; }
-  .tag-69 { background: #FFF9C4; border-color: #FFD54F; color: #F57F17; }
-  .tag-71 { background: #E8F5E9; border-color: var(--mint); color: #388E3C; }
-
-  .route-card {
-    margin: 12px 20px 8px;
-    padding: 16px;
-    background: linear-gradient(135deg, #FFF5F5, #FFF0F5);
-    border-radius: 20px;
-    border: 2px solid var(--pink);
-  }
-  .route-card .route-name {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-  .route-card .route-info {
-    font-size: 13px;
-    color: #999;
-    margin-bottom: 10px;
-  }
-
-  .bus-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-  .bus-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 6px;
+    padding: 6px 16px;
     background: white;
-    border-radius: 16px;
-    border: 2px solid #FFE4E1;
-    transition: all 0.3s;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+    border-bottom: 1px solid #FFE4E1;
+  }
+  .tags-row span {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    border: 1.5px solid #ddd;
     cursor: pointer;
+    user-select: none;
+    background: white;
   }
-  .bus-item:hover {
-    border-color: var(--pink);
-    box-shadow: 0 2px 10px rgba(255,182,193,0.3);
-    transform: translateX(3px);
-  }
-  .bus-icon { font-size: 30px; }
-  .bus-detail { flex: 1; }
-  .bus-detail .stop-name { font-size: 14px; font-weight: 700; color: var(--text); }
-  .bus-detail .arrival { font-size: 12px; color: #999; }
-  .bus-eta {
-    font-size: 20px;
-    font-weight: 700;
-    font-family: 'ZCOOL KuaiLe', cursive;
-    color: var(--coral);
-    min-width: 60px;
-    text-align: center;
-  }
+  .tags-row span:active { background: #FFE4E1; }
 
-  .stops-section {
-    padding: 0 20px;
-    margin-bottom: 12px;
+  .info-panel {
+    padding: 10px 16px;
+    background: white;
+    flex-shrink: 0;
+    max-height: 40vh;
+    overflow-y: auto;
+    border-top: 1px solid #FFE4E1;
+    display: none;
   }
-  .stops-section h3 {
-    font-size: 14px;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-  .stop-item {
+  .info-panel.show { display: block; }
+
+  .route-title { font-size: 17px; font-weight: 700; color: var(--text); }
+  .route-meta { font-size: 13px; color: #999; margin: 2px 0 8px; }
+
+  .stop-row {
     display: flex;
     align-items: center;
-    padding: 6px 0;
+    padding: 5px 0;
     border-bottom: 1px dashed #FFE4E1;
     font-size: 13px;
     color: #666;
     cursor: pointer;
-    transition: all 0.2s;
   }
-  .stop-item:hover { color: var(--coral); padding-left: 4px; }
+  .stop-row:active { background: #FFF5F5; }
   .stop-dot {
-    width: 8px; height: 8px;
+    width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--mint);
-    margin-right: 10px;
+    background: #98FB98;
+    margin-right: 8px;
     flex-shrink: 0;
   }
-  .stop-item.here .stop-dot {
-    background: var(--coral);
-    width: 12px; height: 12px;
-    box-shadow: 0 0 8px rgba(255,127,127,0.5);
+  .stop-row.bus-here .stop-dot { background: #FF7F7F; width: 10px; height: 10px; }
+
+  .bus-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: #FFF0F0;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #FF7F7F;
+    margin: 2px 4px;
+    cursor: pointer;
   }
 
-  .map-container { flex: 1; position: relative; min-width: 0; }
+  .map-wrap { flex: 1; position: relative; min-height: 0; }
   #map { width: 100%; height: 100%; }
 
-  .footer {
-    padding: 12px 20px;
+  .status-bar {
+    padding: 6px 16px;
     text-align: center;
-    font-size: 12px;
-    color: #ccc;
+    font-size: 11px;
+    color: #bbb;
     background: white;
-    border-top: 1px solid #FFE4E1;
     flex-shrink: 0;
   }
 
-  .loading {
+  .loading-text {
     text-align: center;
-    padding: 30px;
+    padding: 15px;
     color: #ccc;
-    font-size: 14px;
+    font-size: 13px;
   }
-  .loading .spinner {
-    display: inline-block;
-    width: 30px; height: 30px;
-    border: 3px solid var(--pink);
-    border-top: 3px solid transparent;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
   .toast {
     position: fixed;
-    top: 20px;
+    top: 15px;
     left: 50%;
     transform: translateX(-50%);
     background: white;
-    padding: 12px 24px;
-    border-radius: 25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    padding: 10px 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
     z-index: 9999;
     font-size: 14px;
     display: none;
-    border: 2px solid var(--pink);
+    border: 2px solid #FFB6C1;
+    pointer-events: none;
   }
-  .toast.show { display: block; animation: toastIn 0.3s ease-out; }
-  @keyframes toastIn {
-    from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
-    to { opacity: 1; transform: translateX(-50%) translateY(0); }
-  }
+  .toast.on { display: block; }
 
-  .no-buses {
-    text-align: center;
-    padding: 20px;
-    color: #bbb;
-    font-size: 14px;
-  }
-
-  .amap-logo, .amap-copyright { display: none !important; }
-
-  @media (max-width: 768px) {
-    body { flex-direction: column; }
-    .sidebar { width: 100%; max-height: 42vh; }
-    .map-container { flex: 1; min-height: 58vh; }
+  @media (min-width: 769px) {
+    body { flex-direction: row; }
+    .top-bar, .search-row, .tags-row, .info-panel, .status-bar { display: none; }
+    body::before {
+      content: '';
+      width: 360px;
+      flex-shrink: 0;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      box-shadow: 2px 0 15px rgba(255,182,193,0.2);
+    }
   }
 </style>
 </head>
 <body>
 
-<div class="sidebar">
-  <div class="header">
-    <h1>🚌 上海公交小可爱</h1>
-    <div class="subtitle">pasteL BuS tRackEr ~ 🌸</div>
-  </div>
+<div class="top-bar"><h1>🚌 上海公交小可爱</h1></div>
 
-  <div class="search-box">
-    <input type="text" id="busSearch" placeholder="输入线路号，比如 510..."
-           onkeydown="if(event.key==='Enter')searchBus()">
-    <button onclick="searchBus()">🔍 查车</button>
-  </div>
-
-  <div class="quick-lines">
-    <span class="tag tag-510" onclick="quickSearch('510')">510路</span>
-    <span class="tag tag-985" onclick="quickSearch('985')">985路</span>
-    <span class="tag tag-233" onclick="quickSearch('233')">233路</span>
-    <span class="tag tag-69" onclick="quickSearch('69')">69路</span>
-    <span class="tag tag-71" onclick="quickSearch('71')">71路</span>
-    <span class="tag" style="background:#FFF3E0;border-color:#FFCC80;color:#E65100;" onclick="quickSearch('南堡支线')">南堡支线</span>
-  </div>
-
-  <div class="route-card" id="routeCard">
-    <div class="route-name" id="routeName">🚌 加载中...</div>
-    <div class="route-info" id="routeInfo"></div>
-    <div class="bus-list" id="busList">
-      <div class="loading"><div class="spinner"></div><br>正在找车车~ 🚌</div>
-    </div>
-  </div>
-
-  <div class="stops-section" id="stopsSection" style="display:none">
-    <h3>🌸 途经站点</h3>
-    <div id="stopsList"></div>
-  </div>
-
-  <div class="footer">
-    🐱 公交迷の小天地 · 数据来自高德地图
-  </div>
+<div class="search-row">
+  <input type="text" id="q" placeholder="输入线路号，如 510路...">
+  <button onclick="go()">🔍</button>
 </div>
 
-<div class="map-container">
-  <div id="map"></div>
+<div class="tags-row">
+  <span onclick="goTag('510路')">510路</span>
+  <span onclick="goTag('985路')">985路</span>
+  <span onclick="goTag('233路')">233路</span>
+  <span onclick="goTag('69路')">69路</span>
+  <span onclick="goTag('71路')">71路</span>
+  <span onclick="goTag('南堡支线')">南堡支线</span>
+  <span onclick="goTag('112路')">112路</span>
+  <span onclick="goTag('63路')">63路</span>
 </div>
 
+<div class="info-panel" id="info">
+  <div class="route-title" id="rname">—</div>
+  <div class="route-meta" id="rmeta">—</div>
+  <div id="buses"></div>
+  <div id="stops"></div>
+</div>
+
+<div class="map-wrap"><div id="map"></div></div>
+<div class="status-bar">🐱 数据来自 OpenStreetMap + 高德公交 · 🌸</div>
 <div class="toast" id="toast"></div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-window._AMapSecurityConfig = { securityJsCode: '' };
-</script>
-<script src="https://webapi.amap.com/v2/maps?v=2.0&key=1c6391e097e980e9d0a251d870395352&plugin=AMap.BusSearch,AMap.LineSearch"></script>
-<script>
-// ============ State ============
-let currentLineId = null;
-let currentBusStops = [];
-let busMarkers = [];
-let routePolyline = null;
-let timer = null;
-
-// Pink theme for AMap
-const map = new AMap.Map('map', {
-  center: [121.4737, 31.2304],
+// ============ Map ============
+const map = L.map('map', {
+  center: [31.2304, 121.4737],
   zoom: 13,
-  mapStyle: 'amap://styles/light',
-  resizeEnable: true
+  zoomControl: true,
+  zoomControlPos: 'bottomright'
 });
 
-// ============ Search Bus ============
-function searchBus() {
-  const q = document.getElementById('busSearch').value.trim();
-  if (!q) return toast('请输入线路号~ 🐱');
-  document.getElementById('routeName').textContent = '🔍 查询中...';
-  document.getElementById('routeInfo').textContent = '';
-  document.getElementById('busList').innerHTML = '<div class="loading"><div class="spinner"></div><br>正在连线高德~ 🌐</div>';
-  document.getElementById('stopsSection').style.display = 'none';
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  attribution: '© OSM',
+  subdomains: 'abcd',
+  maxZoom: 19
+}).addTo(map);
 
-  const busSearch = new AMap.BusSearch({
-    city: '上海',
-    pageSize: 1,
-    extensions: 'all'
-  });
+// Shanghai bounds
+const SH_BOUNDS = L.latLngBounds([[30.68, 120.85], [31.53, 121.97]]);
 
-  busSearch.search(q, function(status, result) {
-    if (status !== 'complete' || !result.list || result.list.length === 0) {
-      document.getElementById('routeName').textContent = '没找到 😿';
-      document.getElementById('busList').innerHTML = '<div class="no-buses">这条线路没查到，试试其他关键词~ 🐱<br><br>比如搜完整的"510路"</div>';
+let markers = [];
+let polyline = null;
+let currentStops = [];
+
+function toast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.className = 'toast on';
+  setTimeout(() => t.className = 'toast', 2000);
+}
+
+// ============ Search ============
+function go() {
+  const q = document.getElementById('q').value.trim();
+  if (!q) return toast('输入线路号~ 🐱');
+  document.getElementById('info').classList.add('show');
+  document.getElementById('rname').textContent = '🔍 查询中...';
+  document.getElementById('rmeta').textContent = '';
+  document.getElementById('buses').innerHTML = '';
+  document.getElementById('stops').innerHTML = '<div class="loading-text">⏳ 搜索中...</div>';
+  searchOSM(q);
+}
+
+function goTag(k) {
+  document.getElementById('q').value = k;
+  go();
+}
+
+// ============ OSM Overpass Search ============
+function searchOSM(query) {
+  const keyword = query.replace(/[^0-9a-zA-Z\u4e00-\u9fa5]/g, '').replace('路','');
+
+  // Build Overpass query
+  const q = `[out:json][timeout:15];
+area["name"="上海市"]->.sh;
+(
+  relation["route"="bus"]["ref"~"^${keyword}"](area.sh);
+  relation["route"="bus"]["name"~"${keyword}"](area.sh);
+);
+out body;
+>; out skel qt;`;
+
+  fetch('https://overpass-api.de/api/interpreter', {
+    method: 'POST',
+    body: 'data=' + encodeURIComponent(q),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  })
+  .then(r => r.json())
+  .then(data => {
+    const nodes = {};
+    data.elements.forEach(e => {
+      if (e.type === 'node') nodes[e.id] = [e.lat, e.lon];
+    });
+
+    const relations = data.elements.filter(e => e.type === 'relation');
+    if (relations.length === 0) {
+      document.getElementById('rname').textContent = '没找到 😿';
+      document.getElementById('stops').innerHTML = '<div class="loading-text">OSM 暂无此线路，试试高德查询~</div>';
+      tryAMap(query);
       return;
     }
-    const line = result.list[0];
-    displayRoute(line);
+
+    // Pick the first relation
+    const rel = relations[0];
+    const tags = rel.tags || {};
+    const members = rel.members || [];
+
+    // Get stops
+    const stopMembers = members.filter(m => m.role && m.role.includes('stop') || m.role === 'platform');
+    const stops = stopMembers.map(m => ({
+      name: tags[`stop_${m.role === 'platform' ? stopMembers.indexOf(m) : ''}`] || `站点`,
+      lat: nodes[m.ref] ? nodes[m.ref][0] : null,
+      lng: nodes[m.ref] ? nodes[m.ref][1] : null,
+      role: m.role
+    }));
+
+    // Get ways for polyline
+    const wayMembers = members.filter(m => m.type === 'way' && !m.role);
+    const coords = [];
+    wayMembers.forEach(w => {
+      const wNodes = w.ref ? [] : [];
+    });
+    const allCoords = stops.filter(s => s.lat).map(s => [s.lat, s.lng]);
+
+    currentStops = stops.filter(s => s.lat);
+
+    // Display
+    const name = tags.name || (keyword + '路');
+    const from = tags.from || '—';
+    const to = tags.to || '—';
+    
+    document.getElementById('rname').textContent = '🚌 ' + name;
+    document.getElementById('rmeta').textContent = `${from} ➜ ${to}`;
+
+    // Stops list
+    document.getElementById('stops').innerHTML = currentStops.map((s, i) => `
+      <div class="stop-row" onclick="map.setView([${s.lat},${s.lng}], 16)">
+        <span class="stop-dot"></span>
+        <span>${s.name || '站点' + (i+1)}</span>
+        ${i===0?'<span style="margin-left:auto;font-size:10px;color:#4CAF50">起</span>':''}
+        ${i===currentStops.length-1?'<span style="margin-left:auto;font-size:10px;color:#F44336">终</span>':''}
+      </div>
+    `).join('');
+
+    // Map
+    drawMap(currentStops, [], allCoords.length > 1 ? allCoords : currentStops);
+    
+    // Also try AMap for real-time
+    tryAMapRealtime(keyword);
+  })
+  .catch(e => {
+    console.error('OSM error:', e);
+    document.getElementById('rname').textContent = 'OSM 查询失败';
+    tryAMap(query);
   });
 }
 
-function quickSearch(k) {
-  document.getElementById('busSearch').value = k;
-  searchBus();
-}
-
-// ============ Display Route ============
-function displayRoute(line) {
-  currentLineId = line.id;
-  const stops = line.busstops || [];
-  currentBusStops = stops;
-  const color = '#FF7F7F';
-
-  document.getElementById('routeName').textContent = line.name;
-  document.getElementById('routeInfo').textContent = `${line.start_stop} ➜ ${line.end_stop} · 首${line.start_time||'?'} 末${line.end_time||'?'}`;
-
-  // Render stops
-  const ss = document.getElementById('stopsSection');
-  const sl = document.getElementById('stopsList');
-  sl.innerHTML = stops.map((s, i) => `
-    <div class="stop-item" onclick="map.setCenter([${s.location.lng},${s.location.lat}]);map.setZoom(16)">
-      <span class="stop-dot"></span>
-      <span>${s.name}</span>
-      ${i === 0 ? '<span style="margin-left:auto;font-size:11px;color:var(--mint)">起点</span>' : ''}
-      ${i === stops.length-1 ? '<span style="margin-left:auto;font-size:11px;color:var(--pink)">终点</span>' : ''}
-    </div>
-  `).join('');
-  ss.style.display = 'block';
-
-  // Update map
-  updateMap(stops, []);
-
-  // Fetch real-time buses
-  fetchRealtime(line.id, stops, line);
-}
-
-function fetchRealtime(lineId, stops, line) {
-  // Use AMap's real-time bus API
-  const url = `https://restapi.amap.com/v3/bus/realtime?key=1c6391e097e980e9d0a251d870395352&output=json&city=上海&extensions=all&buslineid=${lineId}`;
-
-  fetch(url)
+function tryAMap(query) {
+  const keyword = query.replace(/[^0-9a-zA-Z\u4e00-\u9fa5]/g, '');
+  // Use corsproxy to access AMap
+  const amapUrl = `https://restapi.amap.com/v3/bus/linename?s=rsv3&extensions=all&key=1c6391e097e980e9d0a251d870395352&output=json&city=上海&offset=1&keywords=${encodeURIComponent(keyword)}`;
+  
+  fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(amapUrl))
     .then(r => r.json())
-    .then(rt => {
-      let buses = [];
-      if (rt.status === '1' && rt.data && rt.data.buses) {
-        buses = rt.data.buses.map((b, i) => ({
-          id: `${lineId}-${i}`,
-          stop: b.stopname || '运营中',
-          eta: b.arrivaltime != null ? (b.arrivaltime + '分钟') : '—',
-          lng: b.location ? parseFloat(b.location.split(',')[0]) : null,
-          lat: b.location ? parseFloat(b.location.split(',')[1]) : null
-        }));
+    .then(data => {
+      if (data.status !== '1' || !data.buslines || !data.buslines.length) {
+        document.getElementById('stops').innerHTML += '<div class="loading-text">高德也未找到 😿</div>';
+        return;
       }
+      const line = data.buslines[0];
+      const stops = (line.busstops || []).map(s => ({
+        name: s.name,
+        lat: parseFloat(s.location.split(',')[1]),
+        lng: parseFloat(s.location.split(',')[0])
+      }));
 
-      const bl = document.getElementById('busList');
-      if (buses.length === 0) {
-        bl.innerHTML = '<div class="no-buses">🐱 暂无运行动态~<br><span style="font-size:11px">可能末班已过或数据延迟</span></div>';
-      } else {
-        bl.innerHTML = buses.map(b => `
-          <div class="bus-item" onclick="focusBus(${b.lng},${b.lat})">
-            <span class="bus-icon">🚌</span>
-            <div class="bus-detail">
-              <div class="stop-name">${b.stop}</div>
-              <div class="arrival">${line.name} · 往${line.end_stop}</div>
-            </div>
-            <div class="bus-eta">${b.eta}</div>
-          </div>
-        `).join('');
-      }
+      document.getElementById('rname').textContent = '🚌 ' + line.name;
+      document.getElementById('rmeta').textContent = `${line.start_stop} ➜ ${line.end_stop} · 首${line.start_time||'?'} 末${line.end_time||'?'}`;
+      
+      document.getElementById('stops').innerHTML = stops.map((s, i) => `
+        <div class="stop-row" onclick="map.setView([${s.lat},${s.lng}], 16)">
+          <span class="stop-dot"></span><span>${s.name}</span>
+          ${i===0?'<span style="margin-left:auto;font-size:10px;color:#4CAF50">起</span>':''}
+          ${i===stops.length-1?'<span style="margin-left:auto;font-size:10px;color:#F44336">终</span>':''}
+        </div>
+      `).join('');
 
-      // Update stop markers with bus positions
-      const busStopNames = new Set(buses.map(b => b.stop));
-      document.querySelectorAll('.stop-item').forEach((el, i) => {
-        if (busStopNames.has(stops[i]?.name)) el.classList.add('here');
-        else el.classList.remove('here');
-      });
-
-      updateMap(stops, buses);
+      currentStops = stops;
+      drawMap(stops, []);
+      toast('🌸 ' + line.name + ' · ' + stops.length + '站');
     })
     .catch(() => {
-      document.getElementById('busList').innerHTML = '<div class="no-buses">实时数据获取失败 🐱<br><span style="font-size:11px">请稍后重试</span></div>';
+      document.getElementById('stops').innerHTML += '<div class="loading-text">网络错误，请重试 😿</div>';
     });
 }
 
-// ============ Map ============
-function updateMap(stops, buses) {
-  // Clear
-  busMarkers.forEach(m => map.remove(m));
-  busMarkers = [];
-  if (routePolyline) routePolyline.setMap(null);
+function tryAMapRealtime(keyword) {
+  // Not available without valid key
+  document.getElementById('buses').innerHTML = '<div style="padding:6px;font-size:12px;color:#bbb;text-align:center">🚌 实时车辆需有效 API key</div>';
+}
 
-  // Route polyline
-  const path = stops.map(s => [s.location.lng, s.location.lat]);
-  routePolyline = new AMap.Polyline({
-    path: path,
-    strokeColor: '#FF7F7F',
-    strokeWeight: 5,
-    strokeOpacity: 0.6,
-    strokeStyle: 'dashed',
-    strokeDasharray: [12, 8]
-  });
-  routePolyline.setMap(map);
+// ============ Draw Map ============
+function drawMap(stops, buses, polyCoords) {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+  if (polyline) map.removeLayer(polyline);
 
-  // Stop markers
-  const busStopNames = new Set(buses.map(b => b.stop));
+  const coords = polyCoords || stops;
+
+  if (coords.length > 1) {
+    polyline = L.polyline(coords, {
+      color: '#FF9E9E',
+      weight: 5,
+      opacity: 0.5,
+      dashArray: '10, 8'
+    }).addTo(map);
+  }
+
   stops.forEach((s, i) => {
-    const hasBus = busStopNames.has(s.name);
-    const color = i === 0 ? '#4CAF50' : (i === stops.length-1 ? '#F44336' : (hasBus ? '#FF7F7F' : '#BDBDBD'));
-
-    const marker = new AMap.CircleMarker({
-      center: [s.location.lng, s.location.lat],
-      radius: hasBus ? 9 : 5,
+    if (!s.lat || !s.lng) return;
+    const color = i===0 ? '#4CAF50' : (i===stops.length-1 ? '#F44336' : '#BDBDBD');
+    const m = L.circleMarker([s.lat, s.lng], {
+      radius: 5,
       fillColor: color,
-      fillOpacity: 1,
-      strokeColor: '#fff',
-      strokeWeight: 2,
-      zIndex: hasBus ? 100 : 1
-    });
-    marker.setMap(map);
-    marker.setTitle(s.name);
-    marker.on('click', () => {
-      map.setCenter([s.location.lng, s.location.lat]);
-      map.setZoom(16);
-    });
-    busMarkers.push(marker);
+      color: '#fff',
+      weight: 2,
+      fillOpacity: 1
+    }).addTo(map);
+    m.bindTooltip(s.name || ('站点'+(i+1)), { direction: 'top' });
+    markers.push(m);
   });
 
-  // Bus markers
-  buses.forEach(b => {
-    if (!b.lng || !b.lat) return;
-    const content = `<div style="font-size:24px;background:white;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);border:2px solid #FF7F7F">🚌</div>`;
-    const marker = new AMap.Marker({
-      position: [b.lng, b.lat],
-      content: content,
-      offset: new AMap.Pixel(-18, -18),
-      zIndex: 200
-    });
-    marker.setMap(map);
-    marker.setTitle(`${b.stop} · ${b.eta}`);
-    busMarkers.push(marker);
-  });
-
-  // Fit bounds
-  if (path.length > 1) {
-    map.setFitView(null, false, [80, 80, 80, 400]);
-  } else if (path.length === 1) {
-    map.setCenter(path[0]);
-    map.setZoom(16);
+  if (coords.length > 1) {
+    map.fitBounds(coords, { padding: [40, 40], maxZoom: 15 });
+  } else if (coords.length === 1) {
+    map.setView(coords[0], 15);
   }
 }
 
-function focusBus(lng, lat) {
-  if (lng && lat) {
-    map.setCenter([lng, lat]);
-    map.setZoom(15);
-  }
-}
-
-// ============ Utils ============
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ============ Init ============
-setTimeout(() => quickSearch('510'), 800);
-
-// Auto refresh every 30s
-setInterval(() => {
-  if (currentLineId) fetchRealtime(currentLineId, currentBusStops, { name: document.getElementById('routeName').textContent, end_stop: '' });
-}, 30000);
+// Init
+document.getElementById('q').addEventListener('keydown', e => {
+  if (e.key === 'Enter') go();
+});
 </script>
 </body>
 </html>
