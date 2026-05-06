@@ -50,7 +50,7 @@
 
 <header>
   <h1>🛫 AirSight</h1>
-  <span style="font-size:0.7em;color:#555">ADS-B.lol</span>
+  <span id="source-label" style="font-size:0.7em;color:#555">ADS-B.lol</span>
   <div class="stats">
     <span>📡 <b class="val" id="stat-count">—</b></span>
     <span>✈️ <b class="val" id="stat-airborne">—</b></span>
@@ -70,6 +70,7 @@
     <option value="500" selected>500nm</option>
     <option value="800">800nm</option>
   </select>
+  <button id="btn-sdr" onclick="toggleSDR()" style="border-color:#ff8800">📡 SDR模式</button>
   <span style="margin-left:6px;font-size:0.8em;color:#888;">航司</span>
   <select id="airline-filter" onchange="fetchData()">
     <option value="">全部</option>
@@ -148,20 +149,49 @@ function planeIcon(track,alt_ft,ground){
 
 function altClass(m){if(m==null)return'';if(m>10600)return'alt-high';if(m>7600)return'alt-cruise';if(m>3000)return'alt-climb';return'alt-low';}
 
+let useSDR = false;
+function toggleSDR(){
+  useSDR = !useSDR;
+  const btn = document.getElementById('btn-sdr');
+  const lbl = document.getElementById('source-label');
+  if(useSDR){
+    btn.classList.add('active'); btn.style.borderColor='#ff8800';
+    lbl.textContent='本地 SDR 📡'; lbl.style.color='#ff8800';
+  } else {
+    btn.classList.remove('active'); btn.style.borderColor='#ff8800';
+    lbl.textContent='ADS-B.lol'; lbl.style.color='#555';
+  }
+  fetchData().then(renderFlights);
+}
+
 async function fetchData(){
-  const c=centers[currentCenter];
-  const radius=document.getElementById('radius-select').value;
   const airline=document.getElementById('airline-filter').value;
-  const apiUrl=`https://api.adsb.lol/v2/lat/${c.lat}/lon/${c.lon}/dist/${radius}`;
-  const url=`https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
-  try{
-    const resp=await fetch(url);
-    if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
-    const data=await resp.json();
-    return (data.ac||[]).filter(a=>!airline||(a.flight||'').startsWith(airline));
-  }catch(e){
-    document.getElementById('update-time').innerHTML='<span style="color:#ff4444">API 错误</span>';
-    return null;
+  if(useSDR){
+    // Local dump1090 data
+    try{
+      const resp=await fetch('http://localhost:8090/aircraft.json');
+      if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+      const data=await resp.json();
+      return (data.aircraft||[]).filter(a=>!airline||(a.flight||'').trim().startsWith(airline));
+    }catch(e){
+      document.getElementById('update-time').innerHTML='<span style="color:#ff4444">SDR 未连接</span>';
+      document.getElementById('source-label').textContent='SDR 离线 😿';
+      return null;
+    }
+  } else {
+    const c=centers[currentCenter];
+    const radius=document.getElementById('radius-select').value;
+    const apiUrl=`https://api.adsb.lol/v2/lat/${c.lat}/lon/${c.lon}/dist/${radius}`;
+    const url=`https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
+    try{
+      const resp=await fetch(url);
+      if(!resp.ok)throw new Error(`HTTP ${resp.status}`);
+      const data=await resp.json();
+      return (data.ac||[]).filter(a=>!airline||(a.flight||'').startsWith(airline));
+    }catch(e){
+      document.getElementById('update-time').innerHTML='<span style="color:#ff4444">API 错误</span>';
+      return null;
+    }
   }
 }
 
